@@ -1,10 +1,23 @@
-$function() {
+$(function() {
 	//initialize variables
 	//game object
 	var game;
 	
-	function initListeners{
+	function init(){
 		
+		//create a new game object
+		game = new Game;
+		//bind key events to be assigned by Game object
+		initListeners();
 	}
 	
-}
+	function initListeners(){
+		//bind key press events
+		$(window).bind("keydown", { self: game }, game.keyDown);
+		$(window).bind("keyup", { self: game }, game.keyUp);
+	}
+	
+	//initialize the game
+	init();
+	
+});
