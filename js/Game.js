@@ -13,7 +13,7 @@ var Game = function(){
 	if (this.player == null){
 		this.player = new Player();
 	};
-			
+				
 	//actually start the game 
 	this.initGame();
 };
@@ -28,6 +28,9 @@ Game.prototype.initGame = function(){
 	
 	this.canvas.attr("width", 800);
 	this.canvas.attr("height", 500);
+	
+	//put the player in the starting position
+	this.player.setPosition(100, 200);
 		
 	//start the main loop
 	this.timeout();
@@ -47,6 +50,7 @@ Game.prototype.draw = function(){
 	//clear the screen
 	this.context.fillStyle = "rgb(230,230,230)";
 	this.context.fillRect(0, 0, this.canvas.width(), this.canvas.height());
+	
 	//draw the player
 	this.player.draw(this.context);
 		
