@@ -6,17 +6,45 @@ var ARROW = { LEFT: 37, UP: 38, RIGHT: 39, DOWN: 40 };
 
 //constructor - init objects 
 var Game = function(){
+	//call the preloadImages routine - it will start the game via a callback
+	this.imageManager = new ImageManager();
+
+	//pre load the images	
+	this.imageManager.addImage("runnerImage", "./images/runner.png");
+	this.imageManager.addImage("blockImage", "./images/block.png");
+	//pass the context also
+	this.imageManager.loadImages(this, this.initObjects);
+};
+
+Game.prototype.initObjects = function() {	
+	//store this context
+	var oldthis = this;
 	
 	//player object
-	this.player =null;
+	this.player = null;
 	//if player does not exist
 	if (this.player == null){
-		this.player = new Player();
+		oldthis.player = new Player();
+		//set the image using the imageManager
+		oldthis.player.setPlayerImage(oldthis.imageManager);
 	};
-				
+	
+	this.block = null;
+	this.block = new Block();
+	this.block.setBlockImage(this.imageManager);
+	
+	this.blockAgain = new Block();
+	this.blockAgain.setBlockImage(this.imageManager);
+	this.blockAgain.setPosition(200, 200);
+	
+	this.blockThree = new Block();
+	this.blockThree.setBlockImage(this.imageManager);
+	this.blockThree.setPosition(300, 300);
+					
 	//actually start the game 
 	this.initGame();
 };
+
 
 Game.prototype.initGame = function(){
 	
@@ -30,8 +58,11 @@ Game.prototype.initGame = function(){
 	this.canvas.attr("height", 500);
 	
 	//put the player in the starting position
-	this.player.setPosition(100, 200);
-		
+	this.player.setPosition(200, canvas.height - (this.playerImage.getHeight()));
+	
+	//show the canvas	
+	this.canvas.fadeIn(1000);
+
 	//start the main loop
 	this.timeout();
 };
@@ -50,9 +81,16 @@ Game.prototype.draw = function(){
 	//clear the screen
 	this.context.fillStyle = "rgb(230,230,230)";
 	this.context.fillRect(0, 0, this.canvas.width(), this.canvas.height());
-	
 	//draw the player
 	this.player.draw(this.context);
+	
+	//draw the block
+	this.block.draw(this.context);
+	
+	//draw the block
+	this.blockAgain.draw(this.context);
+	
+	this.blockThree.draw(this.context);
 		
 };
 
@@ -62,12 +100,6 @@ Game.prototype.update = function(){
 	//update the player
 	this.player.update(this.canvas);
 	
-	//update the player array
-	for (var x in this.playerArray){
-		if (this.playerArray[x].hasOwnProperty("playerImage")){
-			this.playerArray[x].update(this.canvas);
-		}
-	}
 };
 
 //keydown event

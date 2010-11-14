@@ -1,15 +1,17 @@
 //block object
 
 var Block = function(){
-	this.blockImage = new Image();
-	//when the image has finished loading
-	this.blockImage.load = function(){
-		
-	}
-	this.blockImage.src = "./images/block.png"
-	this.position = new Vector(50, 50);
+	//create a space for its image
+	this.blockImage = null;
+	this.position = new Vector(100, 100);
 	this.velocity = 0;
 };
+
+//set the block image using the imagemanager
+Block.prototype.setBlockImage = function(imageManager) {
+	this.blockImage = imageManager.getImage("blockImage");
+};
+
 
 //update the block
 Block.prototype.update = function(canvas) {
@@ -23,7 +25,7 @@ Block.prototype.draw = function(ctx) {
 
 //set the position of the block
 Block.prototype.setPosition = function(x, y) {
-	
+	this.position.setVector(x, y);
 };
 
 //return the block's width

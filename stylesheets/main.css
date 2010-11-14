@@ -5,6 +5,10 @@ body {
 	margin: 0;
 }
 
+#title {
+	font: 24px/120% "Monaco", "Courier New", serif;
+}
+
 #wrapper {
 	margin: 20px auto;
 	width: 800px;
@@ -12,4 +16,5 @@ body {
 
 #canvas {
 	border: 2px solid #333;
+	display: none;
 }
