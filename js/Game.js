@@ -115,18 +115,22 @@ Game.prototype.timeout = function(){
 
 //update the positions etc
 Game.prototype.update = function(delta){
+
+	if(this.player.moving == false && this.left_key_down == true){
+		//start moving the player to the left
+		this.player.moving = true;
+		this.player.setVelocity(-this.player.speed, 0);
+	} else if (this.player.moving == false && this.right_key_down == true){
+		//start moving the player to the right
+		this.player.moving = true;
+		this.player.setVelocity(+this.player.speed, 0);
+	} else {
+		this.player.moving = false;
+	}
 	
-	if (this.left_key_down == true){
-		//left key down, move
-		this.player.moveLeft(delta);
-		return;
-	}else if(this.right_key_down == true){
-		//right key down move
-		this.player.moveRight(delta);
-		return;
-	}else{
-		//neither key is down
-		this.player.stopMoveRight();
+	//if the player is moving, then move
+	if (this.player.moving == true){
+		this.player.position.x = this.player.position.x + this.player.velocity.x;
 	}
 	
 };

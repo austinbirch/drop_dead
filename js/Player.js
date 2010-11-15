@@ -1,62 +1,34 @@
 //player object
 
 var Player = function(){
+	this.playerImage = null;
+	
 	//default player position
 	this.position = new Vector(50, 50);
+	
 	//default player velocity
-	this.defaultVelocity = 100;
-	//current velocity
-	this.velocity = 100;
+	this.speed = 7;
+	//current scale (to scale movement)
+	this.scale = new Vector(1, 1);
+	//x and y velocities
+	this.velocity = new Vector(0,0);
+	
 	//default acceleration
 	this.defaultAcceleration = 5;
 	//current acceleration
 	this.acceleration = 4;
-	this.playerImage = null;
-	this.movingLeft = false;
-	this.movingRight = false;
+	this.jumping = false;
+	this.moving = false;
 };
 
 Player.prototype.setPlayerImage = function(imageManager) {
 	this.playerImage = imageManager.getImage("runnerImage");
 };
 
+Player.prototype.update = function(delta) {
+	
+};
 
-//move the player left
-Player.prototype.moveLeft = function(delta) {
-		oldPos = this.position;
-		//add the acceleration
-		this.velocity = this.velocity + this.acceleration;
-		newPos = new Vector(this.position.x - (this.velocity * delta), this.position.y);
-		if (newPos.x > 0 && newPos.x < (800 - this.getWidth())){
-			//if new position is within bounds
-			this.position = newPos;
-		}
-};
-//stop moving the player left
-Player.prototype.stopMoveLeft = function() {
-	this.movingLeft = false;
-	//reset acceleration & velocity
-	this.velocity = this.defaultVelocity;
-	this.acceleration = this.defaultAcceleration;
-};
-//move the player right
-Player.prototype.moveRight = function(delta) {
-	oldPos = this.position;
-	//add the acceleration
-	this.velocity = this.velocity + this.acceleration;
-	newPos = new Vector(this.position.x + (this.velocity * delta), this.position.y);
-	if (newPos.x > 0 && newPos.x < (800 - this.getWidth())){
-		//if new position is within bounds
-		this.position = newPos;
-	}
-};
-//stop moving the player right
-Player.prototype.stopMoveRight = function() {
-	this.movingRight = false;
-	//reset acceleration & velocity
-	this.velocity = this.defaultVelocity;
-	this.acceleration = this.defaultAcceleration;
-};
 
 //draw the player
 Player.prototype.draw = function(ctx) {
@@ -67,6 +39,11 @@ Player.prototype.draw = function(ctx) {
 Player.prototype.setPosition = function(x, y) {
 	this.position.setVector(x, y);
 };
+
+Player.prototype.setVelocity = function(x, y) {
+	this.velocity.setVector(x, y);
+};
+
 
 //return the player's width
 Player.prototype.getWidth = function() {
