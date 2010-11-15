@@ -6,6 +6,11 @@ var ARROW = { LEFT: 37, UP: 38, RIGHT: 39, DOWN: 40 };
 
 //constructor - init objects 
 var Game = function(){
+	
+	//keypress vars
+	this.left_key_down = false
+	this.right_key_down = false;
+	
 	//call the preloadImages routine - it will start the game via a callback
 	this.imageManager = new ImageManager();
 
@@ -58,8 +63,8 @@ Game.prototype.initGame = function(){
 	this.canvas.attr("height", 500);
 	
 	//put the player in the starting position
-	this.player.setPosition(200, canvas.height - (this.playerImage.getHeight()));
-	
+	this.player.setPosition(200, canvas.height - (this.player.getHeight()));
+		
 	//show the canvas	
 	this.canvas.fadeIn(1000);
 
@@ -73,8 +78,15 @@ Game.prototype.timeout = function(){
 	this.draw();
 	
 	var self = this;
-	setTimeout(function() { self.timeout() }, 30);
+	var fps = 60;
+	setTimeout(function() { self.timeout() }, 1000/fps);
 };
+
+//update the positions etc
+Game.prototype.update = function(){
+	
+};
+
 
 //actually draw
 Game.prototype.draw = function(){
@@ -94,23 +106,20 @@ Game.prototype.draw = function(){
 		
 };
 
-
-//update the positions etc
-Game.prototype.update = function(){
-	//update the player
-	this.player.update(this.canvas);
-	
-};
-
 //keydown event
 Game.prototype.keyDown = function(e) {
 	var keyCode = e.keyCode;
 	
+	//grab the right context
+	var self = e.data.self;
+	
 	//which key was pressed?
 	switch (keyCode) {
 		case ARROW.LEFT:
+			self.player.moveLeft();
 			break;
 		case ARROW.RIGHT:
+			self.player.moveRight();
 			break;
 		case ARROW.DOWN:
 			break;
@@ -122,5 +131,27 @@ Game.prototype.keyDown = function(e) {
 	
 };
 
-
-//keyup event	
+//keyup event
+Game.prototype.keyUp = function(e) {
+	var keyCode = e.keyCode;
+	
+	//grab the right context
+	var self = e.data.self;
+	
+	//which key was pressed?
+	switch (keyCode) {
+		case ARROW.LEFT:
+			self.player.stopMoveLeft();
+			break;
+		case ARROW.RIGHT:
+			self.player.stopMoveRight();
+			break;
+		case ARROW.DOWN:
+			break;
+		case ARROW.UP:
+			break;
+		case SPACE:
+			break;		
+	};
+	
+};
