@@ -10,6 +10,10 @@ var Game = function(){
 	//keypress vars
 	this.left_key_down = false
 	this.right_key_down = false;
+	this.space_key_down = false;
+	
+	//global gravity
+	this.gravity = 3;
 	
 	this.previous_tick = 0;
 	this.current_tick = 0;
@@ -72,10 +76,14 @@ Game.prototype.initGame = function(){
 	this.canvas.attr("width", 800);
 	this.canvas.attr("height", 500);
 	
+	
 	//set up the floor
 	this.floor.setWidth(canvas.width);
 	//set the position of the floor
 	this.floor.setPosition(0, (canvas.height - this.floor.getTileWidth()));
+	
+	//get the ground position
+	this.ground = this.floor.position.y;
 		
 	//put the player in the starting position
 	this.player.setPosition(200, (this.floor.position.y - this.player.getHeight()));
@@ -116,10 +124,35 @@ Game.prototype.timeout = function(){
 //update the positions etc
 Game.prototype.update = function(delta){
 
+	//if space was pressed - JUMP!
+	if(this.player.jumping == false && this.space_key_down == true){
+		console.log("jump!");
+		//start making the player jump
+		this.player.jumping = true;
+		this.player.setVelocity(this.player.velocity.x, -50);		
+	}
+	
+	//if player is jumping
+	if(this.player.jumping == true){
+			//move player by y velocity
+			//decrement y by gravity
+			console.log("tester: " + this.player.position.y + this.player.velocity.y);
+			console.log("ground: " + this.ground);
+			if (this.player.position.y + this.player.velocity.y < this.ground){
+				this.player.position.y = this.player.position.y + this.player.velocity.y;
+				this.player.setVelocity(this.player.velocity.x, this.player.velocity.y + this.gravity);
+			} else {
+				//we hit the floor
+				this.player.jumping = false;
+				//set to be on the floor 
+				this.player.setPosition(this.player.position.x, this.ground - this.player.getHeight());
+			}
+	}
+
 	if(this.player.moving == false && this.left_key_down == true){
 		//start moving the player to the left
 		this.player.moving = true;
-		this.player.setVelocity(-this.player.speed, 0);
+		this.player.setVelocity(-this.player.speed, this.player.velocity.y);
 	} else if (this.player.moving == false && this.right_key_down == true){
 		//start moving the player to the right
 		this.player.moving = true;
@@ -178,6 +211,7 @@ Game.prototype.keyDown = function(e) {
 		case ARROW.UP:
 			break;
 		case SPACE:
+			self.space_key_down = true;
 			break;		
 	};
 	
@@ -203,6 +237,7 @@ Game.prototype.keyUp = function(e) {
 		case ARROW.UP:
 			break;
 		case SPACE:
+			self.space_key_down = false;
 			break;		
 	};
 };
