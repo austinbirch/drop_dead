@@ -161,7 +161,10 @@ Game.prototype.update = function(delta){
 	
 	//if the player is moving, then move
 	if (this.player.moving == true){
-		this.player.position.x = this.player.position.x + this.player.velocity.x;
+		var newPositionX = this.player.position.x + this.player.velocity.x;
+		if (newPositionX > 0 && newPositionX < (canvas.width - this.player.getWidth())){
+			this.player.position.x = newPositionX;
+		}
 	}
 	
 };
