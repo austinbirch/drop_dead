@@ -136,8 +136,6 @@ Game.prototype.update = function(delta){
 	if(this.player.jumping == true){
 			//move player by y velocity
 			//decrement y by gravity
-			console.log("tester: " + this.player.position.y + this.player.velocity.y);
-			console.log("ground: " + this.ground);
 			if (this.player.position.y + this.player.velocity.y < this.ground){
 				this.player.position.y = this.player.position.y + this.player.velocity.y;
 				this.player.setVelocity(this.player.velocity.x, this.player.velocity.y + this.gravity);
@@ -149,14 +147,14 @@ Game.prototype.update = function(delta){
 			}
 	}
 
-	if(this.player.moving == false && this.left_key_down == true){
+	if(this.player.moving == false && this.right_key_down == true){
+		//start moving the player to the right
+		this.player.moving = true;
+		this.player.setVelocity(+this.player.speed, this.player.velocity.y);
+	} else if (this.player.moving == false && this.left_key_down == true){
 		//start moving the player to the left
 		this.player.moving = true;
 		this.player.setVelocity(-this.player.speed, this.player.velocity.y);
-	} else if (this.player.moving == false && this.right_key_down == true){
-		//start moving the player to the right
-		this.player.moving = true;
-		this.player.setVelocity(+this.player.speed, 0);
 	} else {
 		this.player.moving = false;
 	}
