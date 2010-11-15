@@ -11,6 +11,10 @@ var Game = function(){
 	this.left_key_down = false
 	this.right_key_down = false;
 	
+	this.previous_tick = 0;
+	this.current_tick = 0;
+	this.frames_per_second = 60;
+	
 	//call the preloadImages routine - it will start the game via a callback
 	this.imageManager = new ImageManager();
 
@@ -72,18 +76,50 @@ Game.prototype.initGame = function(){
 	this.timeout();
 };
 
-//main loop
+//main loop - lets try a variable speed one ;-)
 Game.prototype.timeout = function(){
-	this.update();
-	this.draw();
+	console.log("timeout");
+	//store the previous tick
+	this.previous_tick = this.current_tick;
+			
+	//get the new tick
+	this.current_tick = (new Date).getTime();
 	
-	var self = this;
-	var fps = 60;
-	setTimeout(function() { self.timeout() }, 1000/fps);
+	//skip the first timer
+	if (this.previous_tick == 0){
+		// this.update();
+		// this.draw();
+	}else{
+		//update with the delta (delta = time between frames)
+		var delta = (this.current_tick - this.previous_tick);
+		this.update(delta/1000);
+		this.draw();
+	}
+	
+	//call myself
+		
+	 var self = this;
+	// 	var fps = 60;
+	setTimeout(function() { self.timeout() }, 1000/this.frames_per_second);
 };
 
 //update the positions etc
-Game.prototype.update = function(){
+Game.prototype.update = function(delta){
+	if (this.left_key_down == true){
+		//move the player left
+		this.player.moveLeft(delta);
+	}else{
+		//stop moving the player left
+		this.player.stopMoveLeft();
+	}
+	
+	if (this.right_key_down == true){
+		//move the player right
+		this.player.moveRight(delta);
+	}else{
+		//stop the player moving right
+		this.player.stopMoveRight();
+	}
 	
 };
 
@@ -116,10 +152,10 @@ Game.prototype.keyDown = function(e) {
 	//which key was pressed?
 	switch (keyCode) {
 		case ARROW.LEFT:
-			self.player.moveLeft();
+			self.left_key_down = true;
 			break;
 		case ARROW.RIGHT:
-			self.player.moveRight();
+			self.right_key_down = true;
 			break;
 		case ARROW.DOWN:
 			break;
@@ -141,10 +177,10 @@ Game.prototype.keyUp = function(e) {
 	//which key was pressed?
 	switch (keyCode) {
 		case ARROW.LEFT:
-			self.player.stopMoveLeft();
+			self.left_key_down = false;
 			break;
 		case ARROW.RIGHT:
-			self.player.stopMoveRight();
+			self.right_key_down = false;
 			break;
 		case ARROW.DOWN:
 			break;

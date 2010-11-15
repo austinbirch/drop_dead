@@ -4,7 +4,7 @@ var Player = function(){
 	//default player position
 	this.position = new Vector(50, 50);
 	//default player velocity
-	this.velocity = 10;
+	this.velocity = 100;
 	this.playerImage = null;
 	this.movingLeft = false;
 	this.movingRight = false;
@@ -16,22 +16,22 @@ Player.prototype.setPlayerImage = function(imageManager) {
 
 
 //move the player left
-Player.prototype.moveLeft = function() {
-	oldPos = this.position;
-	newPos = new Vector(this.position.x - this.velocity, this.position.y);
-	if (newPos.x > 0 && newPos.x < (800 - this.getWidth())){
-		//if new position is within bounds
-		this.position = newPos;
-	}
+Player.prototype.moveLeft = function(delta) {
+		oldPos = this.position;
+		newPos = new Vector(this.position.x - (this.velocity * delta), this.position.y);
+		if (newPos.x > 0 && newPos.x < (800 - this.getWidth())){
+			//if new position is within bounds
+			this.position = newPos;
+		}
 };
 //stop moving the player left
 Player.prototype.stopMoveLeft = function() {
 	this.movingLeft = false;
 };
 //move the player right
-Player.prototype.moveRight = function() {
+Player.prototype.moveRight = function(delta) {
 	oldPos = this.position;
-	newPos = new Vector(this.position.x + this.velocity, this.position.y);
+	newPos = new Vector(this.position.x + (this.velocity * delta), this.position.y);
 	if (newPos.x > 0 && newPos.x < (800 - this.getWidth())){
 		//if new position is within bounds
 		this.position = newPos;
