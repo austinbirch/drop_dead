@@ -21,6 +21,7 @@ var Game = function(){
 	//pre load the images	
 	this.imageManager.addImage("runnerImage", "./images/runner.png");
 	this.imageManager.addImage("blockImage", "./images/block.png");
+	this.imageManager.addImage("floorImage", "./images/floor.png");
 	//pass the context also
 	this.imageManager.loadImages(this, this.initObjects);
 };
@@ -28,6 +29,11 @@ var Game = function(){
 Game.prototype.initObjects = function() {	
 	//store this context
 	var oldthis = this;
+	
+	//the floor
+	this.floor = null;
+	this.floor = new Floor();
+	this.floor.setFloorImage(this.imageManager);
 	
 	//player object
 	this.player = null;
@@ -66,8 +72,13 @@ Game.prototype.initGame = function(){
 	this.canvas.attr("width", 800);
 	this.canvas.attr("height", 500);
 	
+	//set up the floor
+	this.floor.setWidth(canvas.width);
+	//set the position of the floor
+	this.floor.setPosition(0, (canvas.height - this.floor.getTileWidth()));
+		
 	//put the player in the starting position
-	this.player.setPosition(200, canvas.height - (this.player.getHeight()));
+	this.player.setPosition(200, (this.floor.position.y - this.player.getHeight()));
 		
 	//show the canvas	
 	this.canvas.fadeIn(1000);
@@ -78,7 +89,6 @@ Game.prototype.initGame = function(){
 
 //main loop - lets try a variable speed one ;-)
 Game.prototype.timeout = function(){
-	console.log("timeout");
 	//store the previous tick
 	this.previous_tick = this.current_tick;
 			
@@ -105,19 +115,17 @@ Game.prototype.timeout = function(){
 
 //update the positions etc
 Game.prototype.update = function(delta){
-	if (this.left_key_down == true){
-		//move the player left
-		this.player.moveLeft(delta);
-	}else{
-		//stop moving the player left
-		this.player.stopMoveLeft();
-	}
 	
-	if (this.right_key_down == true){
-		//move the player right
+	if (this.left_key_down == true){
+		//left key down, move
+		this.player.moveLeft(delta);
+		return;
+	}else if(this.right_key_down == true){
+		//right key down move
 		this.player.moveRight(delta);
+		return;
 	}else{
-		//stop the player moving right
+		//neither key is down
 		this.player.stopMoveRight();
 	}
 	
@@ -129,6 +137,10 @@ Game.prototype.draw = function(){
 	//clear the screen
 	this.context.fillStyle = "rgb(230,230,230)";
 	this.context.fillRect(0, 0, this.canvas.width(), this.canvas.height());
+	
+	//draw the floor
+	this.floor.draw(this.context);
+	
 	//draw the player
 	this.player.draw(this.context);
 	
@@ -189,5 +201,4 @@ Game.prototype.keyUp = function(e) {
 		case SPACE:
 			break;		
 	};
-	
 };
