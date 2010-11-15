@@ -13,6 +13,9 @@ var Player = function(){
 	//x and y velocities
 	this.velocity = new Vector(0,0);
 	
+	//player jump speed
+	this.jump_speed = -20;
+	
 	//default acceleration
 	this.defaultAcceleration = 5;
 	//current acceleration
@@ -43,7 +46,6 @@ Player.prototype.setPosition = function(x, y) {
 Player.prototype.setVelocity = function(x, y) {
 	this.velocity.setVector(x, y);
 };
-
 
 //return the player's width
 Player.prototype.getWidth = function() {

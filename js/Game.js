@@ -123,20 +123,20 @@ Game.prototype.timeout = function(){
 
 //update the positions etc
 Game.prototype.update = function(delta){
-
+		
 	//if space was pressed - JUMP!
 	if(this.player.jumping == false && this.space_key_down == true){
 		console.log("jump!");
 		//start making the player jump
 		this.player.jumping = true;
-		this.player.setVelocity(this.player.velocity.x, -50);		
+		this.player.setVelocity(this.player.velocity.x, this.player.jump_speed);		
 	}
 	
 	//if player is jumping
 	if(this.player.jumping == true){
 			//move player by y velocity
 			//decrement y by gravity
-			if (this.player.position.y + this.player.velocity.y < this.ground){
+			if (this.player.position.y + this.player.velocity.y < (this.ground - this.player.getHeight())){
 				this.player.position.y = this.player.position.y + this.player.velocity.y;
 				this.player.setVelocity(this.player.velocity.x, this.player.velocity.y + this.gravity);
 			} else {
@@ -163,12 +163,36 @@ Game.prototype.update = function(delta){
 	if (this.player.moving == true){
 		var newPositionX = this.player.position.x + this.player.velocity.x;
 		if (newPositionX > 0 && newPositionX < (canvas.width - this.player.getWidth())){
-			this.player.position.x = newPositionX;
+				this.player.position.x = newPositionX;
 		}
 	}
-	
+		
+	//move a block down
+	if (this.block.position.y < (this.ground - 32)){
+		this.block.position.y = this.block.position.y + this.block.velocity.y;
+		this.block.setVelocity(0, this.block.velocity.y + 0.1);
+	}else{
+		//hit the floor
+		this.block.position.y = this.ground - 32;
+		
+		//move a block down
+		if (this.blockAgain.position.y < (this.ground - 32)){
+			this.blockAgain.position.y = this.blockAgain.position.y + this.blockAgain.velocity.y;
+			this.blockAgain.setVelocity(0, this.blockAgain.velocity.y + 0.5);
+		}else{
+			//hit the floor
+			this.blockAgain.position.y = this.ground - 31;
+			//move a block down
+			if (this.blockThree.position.y < (this.ground - 32)){
+				this.blockThree.position.y = this.blockThree.position.y + this.blockThree.velocity.y;
+				this.blockThree.setVelocity(0, this.blockThree.velocity.y + 1);
+			}else{
+				//hit the floor
+				this.blockThree.position.y = this.ground - 31;
+			}
+		}
+	}
 };
-
 
 //actually draw
 Game.prototype.draw = function(){
@@ -178,17 +202,23 @@ Game.prototype.draw = function(){
 	
 	//draw the floor
 	this.floor.draw(this.context);
+		
+	//draw the block
+	this.context.fillStyle = "rgba(0, 255, 0, 0.3)";
+	this.block.draw(this.context);
+	this.context.fillRect(this.block.position.x, this.block.position.y, this.block.getWidth(), this.block.getHeight());
+	
+	//draw the block
+	this.context.fillStyle = "rgba(255, 0, 0, 0.3)";
+	this.blockAgain.draw(this.context);
+	this.context.fillRect(this.blockAgain.position.x, this.blockAgain.position.y, this.blockAgain.getWidth(), this.blockAgain.getHeight());
+
+	this.context.fillStyle = "rgba(0, 0, 255, 0.3)";
+	this.blockThree.draw(this.context);
+	this.context.fillRect(this.blockThree.position.x, this.blockThree.position.y, this.blockThree.getWidth(), this.blockThree.getHeight());
 	
 	//draw the player
 	this.player.draw(this.context);
-	
-	//draw the block
-	this.block.draw(this.context);
-	
-	//draw the block
-	this.blockAgain.draw(this.context);
-	
-	this.blockThree.draw(this.context);
 		
 };
 
