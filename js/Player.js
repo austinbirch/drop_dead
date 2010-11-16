@@ -4,7 +4,7 @@ var Player = function(){
 	this.playerImage = null;
 	
 	//player color - determines which image is loaded. default = black
-	this.color = "black";
+	this.color = "white";
 	
 	//default player position
 	this.position = new Vector(50, 50);
@@ -35,8 +35,11 @@ Player.prototype.setPlayerImage = function(imageManager) {
 		case 'green':
 			this.playerImage = imageManager.getImage("runnerImageGreen");
 			break;
+		case 'white':
+			this.playerImage = imageManager.getImage("runnerWhite");
+			break;
 		default:
-			this.playerImage = imageManager.getImage("runnerImageBlack");
+			this.playerImage = imageManager.getImage("runnerImageWhite");
 			break;
 	}
 };

@@ -8,7 +8,8 @@ var ARROW = { LEFT: 37, UP: 38, RIGHT: 39, DOWN: 40 };
 var color_hash = { red: "rgba(255, 0, 0, 0.3)",
  										green: "rgba(0, 255, 0, 0.3)",
 										blue: "rgba(0, 0, 255, 0.3)",
-										fuchsia: "rgba(255, 0, 255, 0.3)" };
+										fuchsia: "rgba(255, 0, 255, 0.3)",
+										white: "rgba(255, 255, 255, 0.3)" };
 
 //constructor - init objects 
 var Game = function(){
@@ -33,7 +34,7 @@ var Game = function(){
 
 	//pre load the images	
 	//player colors
-	this.imageManager.addImage("runnerImageBlack", "./images/runnerBlack.png");
+	this.imageManager.addImage("runnerImageWhite", "./images/runnerWhite.png");
 	this.imageManager.addImage("runnerImageFuchsia", "./images/runnerFuchsia.png");
 	this.imageManager.addImage("runnerImageGreen", "./images/runnerGreen.png");
 	//blocks
@@ -59,6 +60,7 @@ Game.prototype.initObjects = function() {
 	if (this.player == null){
 		oldthis.player = new Player();
 		//set the player color
+		oldthis.player.setColor('white');
 		//set the image using the imageManager
 		oldthis.player.setPlayerImage(oldthis.imageManager);
 	};
