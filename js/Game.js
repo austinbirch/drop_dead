@@ -59,17 +59,16 @@ Game.prototype.initObjects = function() {
 	if (this.player == null){
 		oldthis.player = new Player();
 		//set the player color
-		oldthis.player.setColor('green');
 		//set the image using the imageManager
 		oldthis.player.setPlayerImage(oldthis.imageManager);
 	};
 	
 	//block objects array
 	this.block_array = new Array();
-	for (var x = 3; x > 0; x--){
+	for (var x = 20; x > 0; x--){
 		var block = new Block();
 		block.setBlockImage(this.imageManager);
-		block.setPosition(x * 100, x * 100);
+		block.setPosition(x * block.getWidth(), block.getHeight() * x);
 		this.block_array[x] = block;
 	}
 	
@@ -223,7 +222,7 @@ Game.prototype.draw = function(){
 	this.floor.draw(this.context);
 			
 	//draw the block array
-	for (var x = 3; x > 0; x--){
+	for (var x = (this.block_array.length - 1); x > 0; x--){
 		var block = new Block();
 		block = this.block_array[x];
 		block.draw(this.context);
