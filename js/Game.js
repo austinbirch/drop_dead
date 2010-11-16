@@ -4,6 +4,12 @@
 var SPACE = 32;
 var ARROW = { LEFT: 37, UP: 38, RIGHT: 39, DOWN: 40 };
 
+//block colors
+var color_hash = { red: "rgba(255, 0, 0, 0.3)",
+ 										green: "rgba(0, 255, 0, 0.3)",
+										blue: "rgba(0, 0, 255, 0.3)",
+										fuchsia: "rgba(255, 0, 255, 0.3)" };
+
 //constructor - init objects 
 var Game = function(){
 	
@@ -18,6 +24,9 @@ var Game = function(){
 	this.previous_tick = 0;
 	this.current_tick = 0;
 	this.frames_per_second = 60;
+	this.current_fps = 0;
+	this.frames = 0;
+	this.accumulator = 0;
 	
 	//call the preloadImages routine - it will start the game via a callback
 	this.imageManager = new ImageManager();
@@ -25,7 +34,7 @@ var Game = function(){
 	//pre load the images	
 	this.imageManager.addImage("runnerImage", "./images/runner.png");
 	this.imageManager.addImage("blockImage", "./images/block.png");
-	this.imageManager.addImage("floorImage", "./images/floor.png");
+	this.imageManager.addImage("floorImage", "./images/floor_two.png");
 	//pass the context also
 	this.imageManager.loadImages(this, this.initObjects);
 };
@@ -48,18 +57,18 @@ Game.prototype.initObjects = function() {
 		oldthis.player.setPlayerImage(oldthis.imageManager);
 	};
 	
-	this.block = null;
-	this.block = new Block();
-	this.block.setBlockImage(this.imageManager);
+	//block objects array
+	this.block_array = new Array();
+	for (var x = 3; x > 0; x--){
+		var block = new Block();
+		block.setBlockImage(this.imageManager);
+		block.setPosition(x * 100, (x * 100 - 600));
+		this.block_array[x] = block;
+	}
 	
-	this.blockAgain = new Block();
-	this.blockAgain.setBlockImage(this.imageManager);
-	this.blockAgain.setPosition(200, 200);
-	
-	this.blockThree = new Block();
-	this.blockThree.setBlockImage(this.imageManager);
-	this.blockThree.setPosition(300, 300);
-					
+	this.block_array[1].setColor(color_hash.fuchsia);
+	this.block_array[3].setColor(color_hash.blue);
+						
 	//actually start the game 
 	this.initGame();
 };
@@ -110,8 +119,23 @@ Game.prototype.timeout = function(){
 	}else{
 		//update with the delta (delta = time between frames)
 		var delta = (this.current_tick - this.previous_tick);
+		
+		//store the delta, test for fps
+		this.accumulator = this.accumulator + delta;
+		if (this.accumulator >= 1000){
+			//greater than a second update current frame display
+			this.current_fps = this.frames;
+			this.frames = 1;
+			this.accumulator = 0;
+		}else{
+			//not greater than a second, count another frame
+			this.frames++;
+		}		
+		
+		//update the scene
 		this.update(delta/1000);
-		this.draw();
+		//draw the scene
+		this.draw();		
 	}
 	
 	//call myself
@@ -167,31 +191,19 @@ Game.prototype.update = function(delta){
 		}
 	}
 		
-	//move a block down
-	if (this.block.position.y < (this.ground - 32)){
-		this.block.position.y = this.block.position.y + this.block.velocity.y;
-		this.block.setVelocity(0, this.block.velocity.y + 0.1);
-	}else{
-		//hit the floor
-		this.block.position.y = this.ground - 32;
-		
-		//move a block down
-		if (this.blockAgain.position.y < (this.ground - 32)){
-			this.blockAgain.position.y = this.blockAgain.position.y + this.blockAgain.velocity.y;
-			this.blockAgain.setVelocity(0, this.blockAgain.velocity.y + 0.5);
+	//update blocks
+	for (var x = (this.block_array.length - 1); x > 0; x--){
+		var block = new Block();
+		block = this.block_array[x];
+		if (block.position.y < (this.ground - 32)){
+			block.position.y = block.position.y + block.velocity.y;
+			block.setVelocity(0, block.velocity.y + 0.1);
 		}else{
 			//hit the floor
-			this.blockAgain.position.y = this.ground - 31;
-			//move a block down
-			if (this.blockThree.position.y < (this.ground - 32)){
-				this.blockThree.position.y = this.blockThree.position.y + this.blockThree.velocity.y;
-				this.blockThree.setVelocity(0, this.blockThree.velocity.y + 1);
-			}else{
-				//hit the floor
-				this.blockThree.position.y = this.ground - 31;
-			}
+			block.position.y = this.ground - 32;
 		}
-	}
+	} // end of for loop
+		
 };
 
 //actually draw
@@ -202,23 +214,22 @@ Game.prototype.draw = function(){
 	
 	//draw the floor
 	this.floor.draw(this.context);
-		
-	//draw the block
-	this.context.fillStyle = "rgba(0, 255, 0, 0.3)";
-	this.block.draw(this.context);
-	this.context.fillRect(this.block.position.x, this.block.position.y, this.block.getWidth(), this.block.getHeight());
-	
-	//draw the block
-	this.context.fillStyle = "rgba(255, 0, 0, 0.3)";
-	this.blockAgain.draw(this.context);
-	this.context.fillRect(this.blockAgain.position.x, this.blockAgain.position.y, this.blockAgain.getWidth(), this.blockAgain.getHeight());
-
-	this.context.fillStyle = "rgba(0, 0, 255, 0.3)";
-	this.blockThree.draw(this.context);
-	this.context.fillRect(this.blockThree.position.x, this.blockThree.position.y, this.blockThree.getWidth(), this.blockThree.getHeight());
+			
+	//draw the block array
+	for (var x = 3; x > 0; x--){
+		var block = new Block();
+		block = this.block_array[x];
+		block.draw(this.context);
+	}
 	
 	//draw the player
 	this.player.draw(this.context);
+	
+	
+	//display the current fps
+	this.context.fillStyle = "rgb(0, 0, 0)";
+	this.context.font = "Courier 12px/120%";
+	this.context.fillText("fps: " + this.current_fps, 10, 20);
 		
 };
 

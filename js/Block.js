@@ -6,6 +6,7 @@ var Block = function(){
 	this.position = new Vector(100, 100);
 	this.velocity = new Vector(0, 5);
 	this.speed = 10;
+	this.color = "rgba(255, 0, 0, 0.3)";
 };
 
 //set the block image using the imagemanager
@@ -22,6 +23,9 @@ Block.prototype.update = function(canvas) {
 //draw the block
 Block.prototype.draw = function(ctx) {
 	ctx.drawImage(this.blockImage, this.position.x, this.position.y);
+	//draw the color overlay
+	ctx.fillStyle = this.color;
+	ctx.fillRect(this.position.x, this.position.y, this.getWidth(), this.getHeight());
 };
 
 //set the position of the block
@@ -29,6 +33,7 @@ Block.prototype.setPosition = function(x, y) {
 	this.position.setVector(x, y);
 };
 
+//set the velocity of the block
 Block.prototype.setVelocity = function(x, y) {
 	this.velocity.setVector(x, y);
 };
@@ -41,5 +46,11 @@ Block.prototype.getWidth = function() {
 Block.prototype.getHeight = function() {
 	return this.blockImage.height;
 };
+
+//set the color of the block
+Block.prototype.setColor = function(color) {
+	 this.color = color;
+};
+
 
 
