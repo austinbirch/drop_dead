@@ -3,6 +3,9 @@
 var Player = function(){
 	this.playerImage = null;
 	
+	//player color - determines which image is loaded. default = black
+	this.color = "black";
+	
 	//default player position
 	this.position = new Vector(50, 50);
 	
@@ -14,7 +17,7 @@ var Player = function(){
 	this.velocity = new Vector(0,0);
 	
 	//player jump speed
-	this.jump_speed = -20;
+	this.jump_speed = -10;
 	
 	//default acceleration
 	this.defaultAcceleration = 5;
@@ -25,7 +28,17 @@ var Player = function(){
 };
 
 Player.prototype.setPlayerImage = function(imageManager) {
-	this.playerImage = imageManager.getImage("runnerImage");
+	switch (this.color) {
+		case 'fuchsia':
+			this.playerImage = imageManager.getImage("runnerImageFuchsia");
+			break;
+		case 'green':
+			this.playerImage = imageManager.getImage("runnerImageGreen");
+			break;
+		default:
+			this.playerImage = imageManager.getImage("runnerImageBlack");
+			break;
+	}
 };
 
 Player.prototype.update = function(delta) {
@@ -54,6 +67,11 @@ Player.prototype.getWidth = function() {
 //return the player's height
 Player.prototype.getHeight = function() {
 	return this.playerImage.height;
+};
+
+//set the player's color
+Player.prototype.setColor = function(color) {
+	this.color = color;
 };
 
 

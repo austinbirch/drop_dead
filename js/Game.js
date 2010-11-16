@@ -19,7 +19,7 @@ var Game = function(){
 	this.space_key_down = false;
 	
 	//global gravity
-	this.gravity = 3;
+	this.gravity = 0.9;
 	
 	this.previous_tick = 0;
 	this.current_tick = 0;
@@ -32,10 +32,15 @@ var Game = function(){
 	this.imageManager = new ImageManager();
 
 	//pre load the images	
-	this.imageManager.addImage("runnerImage", "./images/runner.png");
+	//player colors
+	this.imageManager.addImage("runnerImageBlack", "./images/runnerBlack.png");
+	this.imageManager.addImage("runnerImageFuchsia", "./images/runnerFuchsia.png");
+	this.imageManager.addImage("runnerImageGreen", "./images/runnerGreen.png");
+	//blocks
 	this.imageManager.addImage("blockImage", "./images/block.png");
+	//floor
 	this.imageManager.addImage("floorImage", "./images/floor_two.png");
-	//pass the context also
+	//load the images, pass the context
 	this.imageManager.loadImages(this, this.initObjects);
 };
 
@@ -53,6 +58,8 @@ Game.prototype.initObjects = function() {
 	//if player does not exist
 	if (this.player == null){
 		oldthis.player = new Player();
+		//set the player color
+		oldthis.player.setColor('green');
 		//set the image using the imageManager
 		oldthis.player.setPlayerImage(oldthis.imageManager);
 	};
@@ -62,7 +69,7 @@ Game.prototype.initObjects = function() {
 	for (var x = 3; x > 0; x--){
 		var block = new Block();
 		block.setBlockImage(this.imageManager);
-		block.setPosition(x * 100, (x * 100 - 600));
+		block.setPosition(x * 100, x * 100);
 		this.block_array[x] = block;
 	}
 	
@@ -195,12 +202,12 @@ Game.prototype.update = function(delta){
 	for (var x = (this.block_array.length - 1); x > 0; x--){
 		var block = new Block();
 		block = this.block_array[x];
-		if (block.position.y < (this.ground - 32)){
+		if (block.position.y < (this.ground - block.getHeight())){
+			block.setVelocity(0, block.velocity.y + this.gravity)
 			block.position.y = block.position.y + block.velocity.y;
-			block.setVelocity(0, block.velocity.y + 0.1);
 		}else{
 			//hit the floor
-			block.position.y = this.ground - 32;
+			block.position.y = this.ground - block.getHeight();
 		}
 	} // end of for loop
 		

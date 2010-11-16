@@ -4,7 +4,7 @@ var Block = function(){
 	//create a space for its image
 	this.blockImage = null;
 	this.position = new Vector(100, 100);
-	this.velocity = new Vector(0, 5);
+	this.velocity = new Vector(0, -1);
 	this.speed = 10;
 	this.color = "rgba(255, 0, 0, 0.3)";
 };
