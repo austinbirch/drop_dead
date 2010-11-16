@@ -5,6 +5,8 @@ var Player = function(){
 	
 	//player color - determines which image is loaded. default = black
 	this.color = "white";
+	//player name
+	this.player_name = "austin"
 	
 	//default player position
 	this.position = new Vector(50, 50);
@@ -36,7 +38,7 @@ Player.prototype.setPlayerImage = function(imageManager) {
 			this.playerImage = imageManager.getImage("runnerImageGreen");
 			break;
 		case 'white':
-			this.playerImage = imageManager.getImage("runnerWhite");
+			this.playerImage = imageManager.getImage("runnerImageWhite");
 			break;
 		default:
 			this.playerImage = imageManager.getImage("runnerImageWhite");
@@ -52,6 +54,10 @@ Player.prototype.update = function(delta) {
 //draw the player
 Player.prototype.draw = function(ctx) {
 	ctx.drawImage(this.playerImage, this.position.x, this.position.y);
+	//draw the player text
+	ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
+	ctx.font = "10px Monaco, Courier";
+	ctx.fillText(this.player_name, (this.position.x - 10), (this.position.y - 5));
 };
 
 //set the position of the player

@@ -76,6 +76,7 @@ Game.prototype.initObjects = function() {
 	
 	this.block_array[1].setColor(color_hash.fuchsia);
 	this.block_array[3].setColor(color_hash.blue);
+	this.block_array[6].setColor(color_hash.white);
 						
 	//actually start the game 
 	this.initGame();
@@ -236,7 +237,7 @@ Game.prototype.draw = function(){
 	
 	//display the current fps
 	this.context.fillStyle = "rgb(0, 0, 0)";
-	this.context.font = "Courier 12px/120%";
+	this.context.font = "12px Courier";
 	this.context.fillText("fps: " + this.current_fps, 10, 20);
 		
 };
