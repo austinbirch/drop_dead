@@ -28,9 +28,9 @@ Background.prototype.setBackgroundImage = function(imageManager) {
 	this.tile_width = this.backgroundImage.width;
 	this.tile_height = this.backgroundImage.height;
 	//set the map width & height (add two so that we can put a one tile border around the whole bg)
-	this.map_tiled_width = Math.ceil((this.canvas_width / this.backgroundImage.width) + 2);
+	this.map_tiled_width = Math.ceil((this.canvas_width / this.backgroundImage.width));
 	console.log(this.map_tiled_width);
-	this.map_tiled_height = Math.ceil((this.canvas_height / this.backgroundImage.height) + 2);
+	this.map_tiled_height = Math.ceil((this.canvas_height / this.backgroundImage.height));
 	console.log(this.map_tiled_height);
 };
 
@@ -38,11 +38,11 @@ Background.prototype.setBackgroundImage = function(imageManager) {
 Background.prototype.draw = function(ctx) {
 
 	//vertical
-	for (var y = this.map_tiled_height; y > 0; y--){
+	for (var y = this.map_tiled_height; y >= 0; y--){
 		//horizontal
-		for (var x = this.map_tiled_width; x > 0; x--){
-			var x_pos = this.offset_x + ((x * this.tile_width) - (2 * this.tile_width));
-			var y_pos = this.offset_y + ((y * this.tile_height) - (2 * this.tile_height));
+		for (var x = this.map_tiled_width; x >= 0; x--){
+			var x_pos = x * this.tile_width;
+			var y_pos = y * this.tile_height;
 			ctx.drawImage(this.backgroundImage, x_pos, y_pos);
 		}
 	}
