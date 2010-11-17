@@ -3,6 +3,9 @@
 //keypress faux-constants
 var SPACE = 32;
 var ARROW = { LEFT: 37, UP: 38, RIGHT: 39, DOWN: 40 };
+var A = 65;
+var D = 68;
+var S = 83;
 
 //block colors
 var color_hash = { red: "rgba(255, 0, 0, 0.3)",
@@ -19,6 +22,10 @@ var Game = function(){
 	this.right_key_down = false;
 	this.space_key_down = false;
 	
+	this.a_key_down = false;
+	this.d_key_down = false;
+	this.s_key_down = false;
+	
 	//global gravity
 	this.gravity = 0.9;
 	
@@ -28,6 +35,9 @@ var Game = function(){
 	this.current_fps = 0;
 	this.frames = 0;
 	this.accumulator = 0;
+	
+	//global block width
+	this.block_width = 32;
 	
 	//call the preloadImages routine - it will start the game via a callback
 	this.imageManager = new ImageManager();
@@ -60,29 +70,31 @@ Game.prototype.initObjects = function() {
 	this.floor = new Floor();
 	this.floor.setFloorImage(this.imageManager);
 	
-	//player object
-	this.player = null;
-	//if player does not exist
-	if (this.player == null){
-		oldthis.player = new Player();
-		//set the player color
-		oldthis.player.setColor('white');
-		//set the image using the imageManager
-		oldthis.player.setPlayerImage(oldthis.imageManager);
-	};
+	//make a runner player
+	this.player = new RunnerPlayer();
+	//set the player color
+	this.player.setColor('white');
+	//set the image using the imageManager
+	this.player.setPlayerImage(oldthis.imageManager);
+	
+	//make a block player
+	this.playerBlock = new BlockPlayer();
+	//set the player color
+	this.playerBlock.setColor(color_hash.fuchsia);
+	//set the players width
+	this.playerBlock.width = this.block_width;
 	
 	//block objects array
 	this.block_array = new Array();
-	for (var x = 20; x > 0; x--){
+	for (var x = 2; x > 0; x--){
 		var block = new Block();
 		block.setBlockImage(this.imageManager);
 		block.setPosition(x * block.getWidth(), block.getHeight() * x);
 		this.block_array[x] = block;
 	}
 	
-	this.block_array[1].setColor(color_hash.fuchsia);
-	this.block_array[3].setColor(color_hash.blue);
-	this.block_array[6].setColor(color_hash.white);
+	this.block_array[1].setColor(color_hash.red);
+	this.block_array[2].setColor(color_hash.blue);
 						
 	//actually start the game 
 	this.initGame();
@@ -211,6 +223,25 @@ Game.prototype.update = function(delta){
 		}
 	}
 	
+	//update the bock player
+	if (this.a_key_down == true){
+		//move left
+		if (this.playerBlock.position.x > 0){
+			//bounds detection okay, can move
+			this.playerBlock.updatePosition(delta, this.playerBlock.position.x - this.block_width);
+		}
+	} else if (this.d_key_down == true){
+		//move right
+		if (this.playerBlock.position.x < canvas.width - this.block_width){
+			this.playerBlock.updatePosition(delta, this.playerBlock.position.x + this.block_width);
+		}
+	}
+	
+	if (this.s_key_down == true){
+		//fire a block
+		this.playerBlock.fireBlock(delta, this.block_array, this.imageManager);
+	}
+	
 	//update the background
 	// newPlayerPos = new Vector(this.player.position.x, this.player.position.y);
 	// 	deltaPos = new Vector(originalPlayerPos.x - newPlayerPos.x, originalPlayerPos.y - newPlayerPos.y);
@@ -254,6 +285,8 @@ Game.prototype.draw = function(){
 	//draw the player
 	this.player.draw(this.context);
 	
+	//draw the block player
+	this.playerBlock.draw(this.context);
 	
 	//display the current fps
 	this.context.fillStyle = "rgb(255, 255, 255)";
@@ -283,7 +316,17 @@ Game.prototype.keyDown = function(e) {
 			break;
 		case SPACE:
 			self.space_key_down = true;
-			break;		
+			break;
+					
+		case A:
+			self.a_key_down = true;
+			break;
+		case D:
+			self.d_key_down = true;
+			break;
+		case S:
+			self.s_key_down = true;
+			break;
 	};
 	
 };
@@ -309,6 +352,16 @@ Game.prototype.keyUp = function(e) {
 			break;
 		case SPACE:
 			self.space_key_down = false;
-			break;		
+			break;	
+			
+		case A:
+			self.a_key_down = false;
+			break;
+		case D:
+			self.d_key_down = false;
+			break;
+		case S:
+			self.s_key_down = false;
+			break;
 	};
 };
