@@ -37,6 +37,8 @@ var Game = function(){
 	this.imageManager.addImage("runnerImageWhite", "./images/runnerWhite.png");
 	this.imageManager.addImage("runnerImageFuchsia", "./images/runnerFuchsia.png");
 	this.imageManager.addImage("runnerImageGreen", "./images/runnerGreen.png");
+	//background
+	this.imageManager.addImage("bg", "./images/bg.png");
 	//blocks
 	this.imageManager.addImage("blockImage", "./images/block.png");
 	//floor
@@ -48,6 +50,10 @@ var Game = function(){
 Game.prototype.initObjects = function() {	
 	//store this context
 	var oldthis = this;
+	
+	//the background 
+	this.background = new Background();
+	this.background.setBackgroundImage(this.imageManager);
 	
 	//the floor
 	this.floor = null;
@@ -165,6 +171,9 @@ Game.prototype.update = function(delta){
 		this.player.setVelocity(this.player.velocity.x, this.player.jump_speed);		
 	}
 	
+	var originalPlayerPos = new Vector(this.player.position.x, this.player.position.y);	
+	var newPlayerPos = new Vector(0, 0);
+		
 	//if player is jumping
 	if(this.player.jumping == true){
 			//move player by y velocity
@@ -196,9 +205,16 @@ Game.prototype.update = function(delta){
 	if (this.player.moving == true){
 		var newPositionX = this.player.position.x + this.player.velocity.x;
 		if (newPositionX > 0 && newPositionX < (canvas.width - this.player.getWidth())){
+				//update the player position
 				this.player.position.x = newPositionX;
+
 		}
 	}
+	
+	//update the background
+	newPlayerPos = new Vector(this.player.position.x, this.player.position.y);
+	deltaPos = new Vector(originalPlayerPos.x - newPlayerPos.x, originalPlayerPos.y - newPlayerPos.y);
+	this.background.updatePosition(deltaPos);
 		
 	//update blocks
 	for (var x = (this.block_array.length - 1); x > 0; x--){
@@ -218,8 +234,11 @@ Game.prototype.update = function(delta){
 //actually draw
 Game.prototype.draw = function(){
 	//clear the screen
-	this.context.fillStyle = "rgb(230,230,230)";
-	this.context.fillRect(0, 0, this.canvas.width(), this.canvas.height());
+	this.context.fillStyle = "rgb(255, 255, 255)";
+	this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
+	
+	//draw the background
+	this.background.draw(this.context);
 	
 	//draw the floor
 	this.floor.draw(this.context);
@@ -236,7 +255,7 @@ Game.prototype.draw = function(){
 	
 	
 	//display the current fps
-	this.context.fillStyle = "rgb(0, 0, 0)";
+	this.context.fillStyle = "rgb(255, 255, 255)";
 	this.context.font = "12px Courier";
 	this.context.fillText("fps: " + this.current_fps, 10, 20);
 		

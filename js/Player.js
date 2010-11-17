@@ -55,7 +55,7 @@ Player.prototype.update = function(delta) {
 Player.prototype.draw = function(ctx) {
 	ctx.drawImage(this.playerImage, this.position.x, this.position.y);
 	//draw the player text
-	ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
+	ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
 	ctx.font = "10px Monaco, Courier";
 	ctx.fillText(this.player_name, (this.position.x - 10), (this.position.y - 5));
 };
