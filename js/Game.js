@@ -110,7 +110,7 @@ Game.prototype.initGame = function(){
 	this.ground = this.floor.position.y;
 		
 	//put the player in the starting position
-	this.player.setPosition(200, (this.floor.position.y - this.player.getHeight()));
+	this.player.setPosition(400, (this.floor.position.y - this.player.getHeight()));
 		
 	//show the canvas	
 	this.canvas.fadeIn(1000);
@@ -212,9 +212,9 @@ Game.prototype.update = function(delta){
 	}
 	
 	//update the background
-	newPlayerPos = new Vector(this.player.position.x, this.player.position.y);
-	deltaPos = new Vector(originalPlayerPos.x - newPlayerPos.x, originalPlayerPos.y - newPlayerPos.y);
-	this.background.updatePosition(deltaPos);
+	// newPlayerPos = new Vector(this.player.position.x, this.player.position.y);
+	// 	deltaPos = new Vector(originalPlayerPos.x - newPlayerPos.x, originalPlayerPos.y - newPlayerPos.y);
+	// 	this.background.updatePosition(deltaPos);
 		
 	//update blocks
 	for (var x = (this.block_array.length - 1); x > 0; x--){
@@ -234,8 +234,9 @@ Game.prototype.update = function(delta){
 //actually draw
 Game.prototype.draw = function(){
 	//clear the screen
-	this.context.fillStyle = "rgb(255, 255, 255)";
-	this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
+	// this.context.fillStyle = "rgb(255, 255, 255)";
+	// this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
+	this.canvas.width = this.canvas.width;
 	
 	//draw the background
 	this.background.draw(this.context);

@@ -4,71 +4,71 @@ var Background = function(){
 	//create a space for the image
 	this.backgroundImage = null;
 	this.position = new Vector(0, 0);
-	this.tiled_origin = new Vector(0, 0);
-	this.tiled_width = 0;
-	this.tiled_height = 0;
-	//offsets for background image
+	
+	this.canvas_width = 800;
+	this.canvas_height = 500;
+	
+	this.tile_width = 0;
+	this.tile_height = 0;
+	
+	this.map_tiled_width = 0;
+	this.map_tiled_height = 0;
+	
 	this.offset_x = 0;
 	this.offset_y = 0;
-	//canvas = viewport
-	this.viewport_width = 800;
-	this.viewport_height = 500;
+	
+	this.scrolledPos = new Vector(0, 0);
 }
 
 //set the background image
 Background.prototype.setBackgroundImage = function(imageManager) {
 	this.backgroundImage = imageManager.getImage("bg");
+	
+	//set the tile width & height
+	this.tile_width = this.backgroundImage.width;
+	this.tile_height = this.backgroundImage.height;
+	//set the map width & height (add two so that we can put a one tile border around the whole bg)
+	this.map_tiled_width = Math.ceil((this.canvas_width / this.backgroundImage.width) + 2);
+	console.log(this.map_tiled_width);
+	this.map_tiled_height = Math.ceil((this.canvas_height / this.backgroundImage.height) + 2);
+	console.log(this.map_tiled_height);
 };
 
 //draw the background image
 Background.prototype.draw = function(ctx) {
-	
-	//draw height tiled
-	var accumulatedHeight = 0;
-	while (accumulatedHeight < ctx.canvas.width){
-		
-		var accumulatedWidth = 0;
-		//draw width tiled
-		while (accumulatedWidth < ctx.canvas.width){
-			ctx.drawImage(this.backgroundImage, this.tiled_origin.x + accumulatedWidth, this.tiled_origin.y + accumulatedHeight);
-			accumulatedWidth = accumulatedWidth + this.backgroundImage.width;
+
+	//vertical
+	for (var y = this.map_tiled_height; y > 0; y--){
+		//horizontal
+		for (var x = this.map_tiled_width; x > 0; x--){
+			var x_pos = this.offset_x + ((x * this.tile_width) - (2 * this.tile_width));
+			var y_pos = this.offset_y + ((y * this.tile_height) - (2 * this.tile_height));
+			ctx.drawImage(this.backgroundImage, x_pos, y_pos);
 		}
-		accumulatedWidth = 0;
-		accumulatedHeight = accumulatedHeight + this.backgroundImage.height;
 	}
-	
+		
 };
 
 //update position
 Background.prototype.updatePosition = function(deltaVector) {
-		//update the base background position 
-		this.tiled_origin = new Vector(this.tiled_origin.x + deltaVector.x, this.tiled_origin.y + deltaVector.y);
-		
-		//calculate offset
-		offset_x = this.tiled_origin.x;
-		offset_y = this.tiled_origin.y;
-		
-		//for horizontal
-		var requiredExtraHorizontal = offset_x / this.backgroundImage.width;
-		//round it up, we want to overdraw
-		requiredExtraHorizontal = Math.ceil(requiredExtraHorizontal);
-		//for vertical
-		var requiredExtraVertical = offset_y / this.backgroundImage.height;
-		//round it up
-		requiredExtraVertical = Math.ceil(requiredExtraVertical);
-		
-		//horizontal
-		if (deltaVector.x <= 0){
-			//offset was negative, which means that we need to draw on the right hand side
-			//move the origin right by the extra tiles, add the extra tiles to the end 
-			this.tiled_origin.x = this.tiled_origin.x + (this.backgroundImage.width * requiredExtraHorizontal);
-			this.tiled_width = this.viewport_width - (this.backgroundImage.width * requiredExtraHorizontal);			
-		} else {
-			//offset was positive, which means we need to move to the right, and take some width away
-			this.tiled_origin.x = this.tiled_origin.x - (this.backgroundImage.width * requiredExtraHorizontal);
-			this.tiled_width = this.viewport_width + (this.backgroundImage.width * requiredExtraHorizontal);
-		}
-		
-		
+	//update the scroll position
+	this.scrolledPos = new Vector(this.scrolledPos.x + deltaVector.x, this.scrolledPos.y + deltaVector.y);
+	
+	//calculate offset
+	this.offset_x = this.scrolledPos.x;
+	this.offset_y = this.scrolledPos.y;
+	
+	//if the offset is greater or equal to tile size (+ or -), reset the position to zero
+	if (Math.abs(this.offset_x) >= this.tile_width){
+		//reset the scrollposition
+		this.scrolledPos.x = this.position.x;
+	}
+	
+	//if the offset is greater or equal to tile size (+ or -), reset the position to zero
+	if (Math.abs(this.offset_y) >= this.tile_height){
+		//reset the scrollposition
+		this.scrolledPos.y = this.position.y;
+	}
+	
 };
 
