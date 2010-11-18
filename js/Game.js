@@ -271,10 +271,7 @@ Game.prototype.draw = function(){
 	
 	//draw the background
 	this.background.draw(this.context);
-	
-	//draw the floor
-	this.floor.draw(this.context);
-			
+				
 	//draw the block array
 	for (var x = (this.block_array.length - 1); x > 0; x--){
 		var block = new Block();
@@ -292,6 +289,9 @@ Game.prototype.draw = function(){
 	this.context.fillStyle = "rgb(255, 255, 255)";
 	this.context.font = "12px Courier";
 	this.context.fillText("fps: " + this.current_fps, 10, 20);
+	
+	//draw the floor last - hides some of the overshooting of blocks
+	this.floor.draw(this.context);
 		
 };
 
