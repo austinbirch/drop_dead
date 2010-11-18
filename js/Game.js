@@ -27,7 +27,7 @@ var Game = function(){
 	this.s_key_down = false;
 	
 	//global gravity
-	this.gravity = 0.9;
+	this.gravity = 1;
 	
 	this.previous_tick = 0;
 	this.current_tick = 0;
