@@ -34,7 +34,6 @@ BlockPlayer.prototype.draw = function(ctx) {
 
 //update the position
 BlockPlayer.prototype.updatePosition = function(delta, newPos) {
-	console.log("delta = " + delta);
 	this.current_rate = this.current_rate + delta;
 	
 	//if we are allowed to move, then move
@@ -59,7 +58,6 @@ BlockPlayer.prototype.fireBlock = function(delta, blockArray, imageManager) {
 		//set the block image
 		firedBlock.setBlockImage(imageManager);
 		blockArray.push(firedBlock);
-		console.log(blockArray);
 		this.current_fire_rate = 0;
 	}
 };

@@ -251,12 +251,16 @@ Game.prototype.update = function(delta){
 	for (var x = (this.block_array.length - 1); x > 0; x--){
 		var block = new Block();
 		block = this.block_array[x];
-		if (block.position.y < (this.ground - block.getHeight())){
-			block.setVelocity(0, block.velocity.y + this.gravity)
-			block.position.y = block.position.y + block.velocity.y;
-		}else{
-			//hit the floor
-			block.position.y = this.ground - block.getHeight();
+		if (block.moving = true){
+			if (block.position.y < (this.ground - block.getHeight())){
+				block.setVelocity(0, block.velocity.y + this.gravity)
+				block.position.y = block.position.y + block.velocity.y;
+			}else{
+				//hit the floor
+				block.position.y = this.ground - block.getHeight();
+				block.moving = false;
+				block.velocity.y = 0;
+			}
 		}
 	} // end of for loop
 		

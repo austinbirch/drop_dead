@@ -7,6 +7,7 @@ var Block = function(){
 	this.velocity = new Vector(0, -0.1);
 	this.speed = 10;
 	this.color = "rgba(255, 0, 0, 0.3)";
+	this.moving = false;
 };
 
 //set the block image using the imagemanager
@@ -27,7 +28,11 @@ Block.prototype.draw = function(ctx) {
 	ctx.fillStyle = this.color;
 	ctx.strokeStyle = "rgb(0, 0, 0)";
 	ctx.fillRect(this.position.x, this.position.y, this.getWidth(), this.getHeight());
-	ctx.strokeRect(this.position.x, this.position.y, this.getWidth(), this.getHeight());
+	//ctx.strokeRect(this.position.x, this.position.y, this.getWidth(), this.getHeight());
+	// //draw the velocity text
+	// ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
+	// ctx.font = "10px Monaco, Courier";
+	// ctx.fillText(this.velocity.y, (this.position.x + 5), (this.position.y + 10));
 };
 
 //set the position of the block
