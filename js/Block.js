@@ -24,11 +24,15 @@ Block.prototype.update = function(canvas) {
 //draw the block
 Block.prototype.draw = function(ctx) {
 	ctx.drawImage(this.blockImage, this.position.x, this.position.y);
+	
+	ctx.lineWidth = 2;
+	
 	//draw the color overlay
 	ctx.fillStyle = this.color;
 	ctx.strokeStyle = "rgb(0, 0, 0)";
 	ctx.fillRect(this.position.x, this.position.y, this.getWidth(), this.getHeight());
-	//ctx.strokeRect(this.position.x, this.position.y, this.getWidth(), this.getHeight());
+	ctx.strokeRect(this.position.x, this.position.y, this.getWidth(), this.getHeight());
+		
 	// //draw the velocity text
 	// ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
 	// ctx.font = "10px Monaco, Courier";
