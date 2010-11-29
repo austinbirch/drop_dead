@@ -27,7 +27,7 @@ var Game = function(){
 	this.s_key_down = false;
 	
 	//global gravity
-	this.gravity = 1;
+	this.gravity = 0.5;
 	
 	this.previous_tick = 0;
 	this.current_tick = 0;
@@ -90,6 +90,7 @@ Game.prototype.initObjects = function() {
 		var block = new Block();
 		block.setBlockImage(this.imageManager);
 		block.setPosition(x * block.getWidth(), block.getHeight() * x);
+		block.moving = true;
 		this.block_array[x] = block;
 	}
 	
@@ -174,6 +175,7 @@ Game.prototype.timeout = function(){
 
 //update the positions etc
 Game.prototype.update = function(delta){
+			
 		
 	//if space was pressed - JUMP!
 	if(this.player.jumping == false && this.space_key_down == true){
@@ -251,10 +253,28 @@ Game.prototype.update = function(delta){
 	for (var x = (this.block_array.length - 1); x > 0; x--){
 		var block = new Block();
 		block = this.block_array[x];
-		if (block.moving = true){
+		if (block.moving == true){
 			if (block.position.y < (this.ground - block.getHeight())){
 				block.setVelocity(0, block.velocity.y + this.gravity)
 				block.position.y = block.position.y + block.velocity.y;
+				
+				//collision detection against other blocks
+				for (var y = (this.block_array.length - 1); y > 0; y--){
+					var blockB = new Block();
+					blockB = this.block_array[y];
+					//make sure we are not testing against ourselves
+					if (block != blockB){
+						//test for collision
+						if (this.collisionDetect(block, blockB) == true){
+							//if a collision exsits
+							//stop me
+							block.moving = false;
+							block.velocity.y = 0;
+							block.position.y = blockB.position.y + 32;
+						}
+					}
+				}
+				
 			}else{
 				//hit the floor
 				block.position.y = this.ground - block.getHeight();
@@ -298,6 +318,52 @@ Game.prototype.draw = function(){
 	this.floor.draw(this.context);
 		
 };
+
+Game.prototype.collisionDetect = function(objA, objB) {
+	// detect for a collision between two objects - each object should report it's bounding box as a 'Rect'
+	rectA = objA.getBoundingRect();
+	rectB = objB.getBoundingRect();
+	
+	leftA = rectA.x;
+	rightA = rectA.x + rectA.width;
+	topA = rectA.y;
+	bottomA = rectA.y + rectA.height;
+	
+	leftB = rectB.x;
+	rightB = rectB.x + rectB.width;
+	topB = rectB.y;
+	bottomB = rectB.y + rectB.height;
+	
+	// if (leftA > leftB && leftA < rightB){
+	// 		//potential collision (in-line vertically)
+	// 		if (topA > topB && topA < bottomB){
+	// 			//collision
+	// 			return true;
+	// 			console.log("collision");
+	// 		}
+	// 	}
+	
+	if (bottomA < topB){
+		return false;
+	}
+	
+	if (topA > bottomA){
+		return false;
+	}
+	
+	if (rightA < leftB){
+		return false;
+	}
+	
+	if (leftA > rightB){
+		return false;
+	}
+	
+	//collision! - return true
+	return true;
+	
+};
+
 
 //keydown event
 Game.prototype.keyDown = function(e) {

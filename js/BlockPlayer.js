@@ -55,6 +55,7 @@ BlockPlayer.prototype.fireBlock = function(delta, blockArray, imageManager) {
 		var firedBlock = new Block();
 		firedBlock.color = this.color;
 		firedBlock.position = new Vector(this.position.x, this.position.y);
+		firedBlock.moving = true;
 		//set the block image
 		firedBlock.setBlockImage(imageManager);
 		blockArray.push(firedBlock);

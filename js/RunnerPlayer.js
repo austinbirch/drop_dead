@@ -18,6 +18,9 @@ var RunnerPlayer = function(){
 	//x and y velocities
 	this.velocity = new Vector(0,0);
 	
+	//bounding rectangle for the player
+	this.boundingRect = new Rect(0, 0, 0, 0);
+	
 	//player jump speed
 	this.jump_speed = -10;
 	
@@ -77,6 +80,25 @@ RunnerPlayer.prototype.getWidth = function() {
 RunnerPlayer.prototype.getHeight = function() {
 	return this.playerImage.height;
 };
+
+RunnerPlayer.prototype.getBoundingRect = function() {
+	width = 0, height = 0;
+	
+	width = this.getWidth();
+	height = this.getHeight();
+	
+	//80% of actual rect
+	col_width = width * 0.80;
+	col_height = height * 0.80;
+	
+	col_x_offset = (width - col_width) / 2;
+	col_y_offset = (height - col_height) / 2;
+		
+	this.boundingRect.setRect(this.position.x + col_x_offset, this.position.y + col_y_offset, col_width, col_height);
+	
+	return this.boundingRect;
+};
+
 
 //set the player's color
 RunnerPlayer.prototype.setColor = function(color) {
