@@ -270,7 +270,7 @@ Game.prototype.update = function(delta){
 							//stop me
 							block.moving = false;
 							block.velocity.y = 0;
-							block.position.y = blockB.position.y + 32;
+							block.position.y = blockB.position.y - block.getHeight();
 						}
 					}
 				}
