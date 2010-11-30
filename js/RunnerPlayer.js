@@ -22,7 +22,7 @@ var RunnerPlayer = function(){
 	this.boundingRect = new Rect(0, 0, 0, 0);
 	
 	//player jump speed
-	this.jump_speed = -10;
+	this.jump_speed = -7;
 	
 	//default acceleration
 	this.defaultAcceleration = 5;

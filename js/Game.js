@@ -297,7 +297,7 @@ Game.prototype.update = function(delta){
 	
 	//alter the alert message opacity, if there is one
 	if (this.alert_message != ""){
-		this.alert_opacity -= 0.01;
+		this.alert_opacity -= 0.008;
 		if (this.alert_opacity < 0.02) { 
 			//reset message & opacity
 			this.alert_message = "";
