@@ -39,6 +39,10 @@ var Game = function(){
 	//global block width
 	this.block_width = 32;
 	
+	//alert message to show over the main screen
+	this.alert_message = "";
+	this.alert_opacity = 0.7;
+	
 	//call the preloadImages routine - it will start the game via a callback
 	this.imageManager = new ImageManager();
 
@@ -275,6 +279,13 @@ Game.prototype.update = function(delta){
 					}
 				}
 				
+				//collision detection against the player
+				if (this.collisionDetect(block, this.player)){
+					//this is a hit
+					// alert('BOOM, HEADSHOT!');
+					this.alert_message = "BOOM, HEADSHOT!";
+				}
+				
 			}else{
 				//hit the floor
 				block.position.y = this.ground - block.getHeight();
@@ -283,6 +294,16 @@ Game.prototype.update = function(delta){
 			}
 		}
 	} // end of for loop
+	
+	//alter the alert message opacity, if there is one
+	if (this.alert_message != ""){
+		this.alert_opacity -= 0.01;
+		if (this.alert_opacity < 0.02) { 
+			//reset message & opacity
+			this.alert_message = "";
+			this.alert_opacity = 0.7;
+		}
+	}
 		
 };
 
@@ -316,6 +337,13 @@ Game.prototype.draw = function(){
 	
 	//draw the floor last - hides some of the overshooting of blocks
 	this.floor.draw(this.context);
+	
+	//draw the alert message over everything else
+	if (this.alert_message != ""){
+		this.context.font = "64px Courier";		
+		this.context.fillStyle = "rgba(255, 255, 255," + this.alert_opacity +  ")";
+		this.context.fillText(this.alert_message, 130, 220);
+	}
 		
 };
 
@@ -363,7 +391,6 @@ Game.prototype.collisionDetect = function(objA, objB) {
 	return true;
 	
 };
-
 
 //keydown event
 Game.prototype.keyDown = function(e) {
