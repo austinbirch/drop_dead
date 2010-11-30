@@ -347,7 +347,7 @@ Game.prototype.collisionDetect = function(objA, objB) {
 		return false;
 	}
 	
-	if (topA > bottomA){
+	if (topA > bottomB){
 		return false;
 	}
 	
