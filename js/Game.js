@@ -342,7 +342,8 @@ Game.prototype.draw = function(){
 	if (this.alert_message != ""){
 		this.context.font = "64px Courier";		
 		this.context.fillStyle = "rgba(255, 255, 255," + this.alert_opacity +  ")";
-		this.context.fillText(this.alert_message, 130, 220);
+		this.context.textAlign = "center";
+		this.context.fillText(this.alert_message, this.canvas.width() / 2, this.canvas.height() / 2);
 	}
 		
 };
