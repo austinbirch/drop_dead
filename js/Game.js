@@ -344,6 +344,8 @@ Game.prototype.draw = function(){
 		this.context.fillStyle = "rgba(255, 255, 255," + this.alert_opacity +  ")";
 		this.context.textAlign = "center";
 		this.context.fillText(this.alert_message, this.canvas.width() / 2, this.canvas.height() / 2);
+		//reset the text align for the context
+		this.context.textAlign = "left";
 	}
 		
 };
