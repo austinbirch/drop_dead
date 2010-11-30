@@ -3,6 +3,7 @@
 body {
 	background-color: #fff;
 	margin: 0;
+	font-family: "Monaco", "Courier", serif;
 }
 
 #title {
@@ -14,7 +15,13 @@ body {
 	width: 800px;
 }
 
+#about {
+	
+}
+
 #canvas {
 	border: 2px solid #333;
 	display: none;
 }
+
+p { font-size: 13px; }
