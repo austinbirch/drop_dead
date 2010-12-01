@@ -16,7 +16,7 @@ var color_hash = { red: "rgba(255, 0, 0, 0.3)",
 
 //constructor - init objects 
 var Game = function(){
-	
+				
 	//keypress vars
 	this.left_key_down = false
 	this.right_key_down = false;
@@ -183,7 +183,6 @@ Game.prototype.update = function(delta){
 		
 	//if space was pressed - JUMP!
 	if(this.player.jumping == false && this.space_key_down == true){
-		console.log("jump!");
 		//start making the player jump
 		this.player.jumping = true;
 		this.player.setVelocity(this.player.velocity.x, this.player.jump_speed);		
@@ -197,8 +196,9 @@ Game.prototype.update = function(delta){
 			//move player by y velocity
 			//decrement y by gravity
 			if (this.player.position.y + this.player.velocity.y < (this.ground - this.player.getHeight())){
+				//collision detection for jumping on blocks
 				this.player.position.y = this.player.position.y + this.player.velocity.y;
-				this.player.setVelocity(this.player.velocity.x, this.player.velocity.y + this.gravity);
+				this.player.setVelocity(this.player.velocity.x, this.player.velocity.y + this.gravity);				
 			} else {
 				//we hit the floor
 				this.player.jumping = false;
@@ -257,6 +257,8 @@ Game.prototype.update = function(delta){
 	for (var x = (this.block_array.length - 1); x > 0; x--){
 		var block = new Block();
 		block = this.block_array[x];
+				
+		//block vs block collision detection
 		if (block.moving == true){
 			if (block.position.y < (this.ground - block.getHeight())){
 				block.setVelocity(0, block.velocity.y + this.gravity)
@@ -284,6 +286,10 @@ Game.prototype.update = function(delta){
 					//this is a hit
 					// alert('BOOM, HEADSHOT!');
 					this.alert_message = "BOOM, HEADSHOT!";
+					if (this.alert_opacity != 0.7){
+						//there is already a alert in progress, force a new one
+						this.alert_opacity = 0.7;
+					}
 				}
 				
 			}else{
@@ -345,7 +351,7 @@ Game.prototype.draw = function(){
 		this.context.textAlign = "center";
 		this.context.fillText(this.alert_message, this.canvas.width() / 2, this.canvas.height() / 2);
 		//reset the text align for the context
-		this.context.textAlign = "left";
+		this.context.textAlign = "left";		
 	}
 		
 };

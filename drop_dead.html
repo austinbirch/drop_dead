@@ -14,6 +14,15 @@
 	<script type="text/javascript" src="js/Floor.js"></script>
 	<script type="text/javascript" src="js/Background.js"></script>
 	<script type="text/javascript" src="js/ImageManager.js"></script>
+	
+	<script>
+	
+		$.get("RECENT_CHANGES", function(data){
+			$("#changes").append(data);
+		});
+			
+	</script>
+	
 </head>
 <body>
 	<div id="wrapper">
@@ -28,6 +37,10 @@
 				<p>Dropper - A and D to move, S to fire blocks.</p>
 			</div><!-- #about -->
 			
+			<div id="recent_changes">
+				<h3>Recent Changes</h3><p><em>(these may not load in Chrome yet.)</em></p>
+				<pre id="changes"></pre>
+			</div>
 	</div><!-- #wrapper -->
 </body>
 </html>

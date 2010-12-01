@@ -1,0 +1,9 @@
+15 hours ago: Altered CSS to stop delay in canvas resize causing jarring layout shift on page load.
+
+15 hours ago: Adjusted player jump velocity and alert message fade time.
+
+15 hours ago: Fixed context.textAlign resetting.
+
+16 hours ago: Refactored message overlay position code.
+
+16 hours ago: Added simple message overlay for game events. Collision detection with moving block vs player added.

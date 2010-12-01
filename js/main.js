@@ -4,7 +4,7 @@ $(function() {
 	var game;
 	
 	function init(){
-		
+				
 		//create a new game object
 		game = new Game;
 		//bind key events to be assigned by Game object
@@ -17,6 +17,8 @@ $(function() {
 		$(window).bind("keyup", { self: game }, game.keyUp);
 	}
 	
+	// $("#changes").load("recent_changes.txt");
+		
 	//initialize the game
 	init();
 	

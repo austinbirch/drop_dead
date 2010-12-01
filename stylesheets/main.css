@@ -24,6 +24,15 @@ body {
 	height: 500px;
 }
 
+#recent_changes {
+	background-color: #efefef;
+	-webkit-border-radius: 5px;
+}
+
+#changes {
+	white-space: pre-wrap;
+}
+
 #canvas {
 	border: 2px solid #333;
 	display: none;
