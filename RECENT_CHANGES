@@ -1,9 +1,9 @@
-15 hours ago: Altered CSS to stop delay in canvas resize causing jarring layout shift on page load.
+2010-12-01: Changed player name to be generic. Stopped browser from processing keypresses annoyingly.
 
-15 hours ago: Adjusted player jump velocity and alert message fade time.
+2010-12-01: Added 'Recent Changes' section to the index page.
 
-15 hours ago: Fixed context.textAlign resetting.
+2010-11-30: Altered CSS to stop delay in canvas resize causing jarring layout shift on page load.
 
-16 hours ago: Refactored message overlay position code.
+2010-11-30: Adjusted player jump velocity and alert message fade time.
 
-16 hours ago: Added simple message overlay for game events. Collision detection with moving block vs player added.
+2010-11-30: Fixed context.textAlign resetting.
