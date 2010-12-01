@@ -223,9 +223,24 @@ Game.prototype.update = function(delta){
 	if (this.player.moving == true){
 		var newPositionX = this.player.position.x + this.player.velocity.x;
 		if (newPositionX > 0 && newPositionX < (canvas.width - this.player.getWidth())){
-				//update the player position
+				//if within bounds of the canvas
 				this.player.position.x = newPositionX;
-
+				//test for collision				
+				for (var i = (this.block_array.length - 1); i > 0; i--){
+					var block = new Block();
+					block = this.block_array[i];
+					
+					if (this.collisionDetect(this.player, block) == true){
+						//there is a collision
+						if (this.player.velocity.x > 0){
+							//player is moving right
+							this.player.position.x = block.position.x - this.player.getWidth();	
+						}else if (this.player.velocity.x < 0){
+							//the player is moving left
+							this.player.position.x = block.position.x + block.getWidth();
+						}
+					}
+				};
 		}
 	}
 	
