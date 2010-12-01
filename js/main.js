@@ -15,6 +15,7 @@ $(function() {
 		//bind key press events
 		$(window).bind("keydown", { self: game }, game.keyDown);
 		$(window).bind("keyup", { self: game }, game.keyUp);
+		$(window).bind("keypress", { self: game}, game.keyPress);
 	}
 	
 	// $("#changes").load("recent_changes.txt");

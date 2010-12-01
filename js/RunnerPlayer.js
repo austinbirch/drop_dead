@@ -6,7 +6,7 @@ var RunnerPlayer = function(){
 	//player color - determines which image is loaded. default = black
 	this.color = "white";
 	//player name
-	this.player_name = "austin"
+	this.player_name = "player"
 	
 	//default player position
 	this.position = new Vector(50, 50);

@@ -435,6 +435,17 @@ Game.prototype.keyDown = function(e) {
 			break;
 	};
 	
+	//stop the browser from processing all of the events we will deal with
+	//not particularly good practice, I'll change this later
+	switch (keyCode){
+		case ARROW.LEFT:
+		case ARROW.RIGHT:
+		case ARROW.UP:
+		case ARROW.DOWN:
+		case SPACE:
+			return false;
+	};
+	
 };
 
 //keyup event
@@ -471,3 +482,4 @@ Game.prototype.keyUp = function(e) {
 			break;
 	};
 };
+
