@@ -1,3 +1,5 @@
+2010-12-01: More sane date formatting to RECENT_CHANGES.
+
 2010-12-01: Changed player name to be generic. Stopped browser from processing keypresses annoyingly.
 
 2010-12-01: Added 'Recent Changes' section to the index page.
@@ -5,5 +7,3 @@
 2010-11-30: Altered CSS to stop delay in canvas resize causing jarring layout shift on page load.
 
 2010-11-30: Adjusted player jump velocity and alert message fade time.
-
-2010-11-30: Fixed context.textAlign resetting.
