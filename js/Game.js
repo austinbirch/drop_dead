@@ -196,9 +196,25 @@ Game.prototype.update = function(delta){
 			//move player by y velocity
 			//decrement y by gravity
 			if (this.player.position.y + this.player.velocity.y < (this.ground - this.player.getHeight())){
-				//collision detection for jumping on blocks
+				//move the player
 				this.player.position.y = this.player.position.y + this.player.velocity.y;
 				this.player.setVelocity(this.player.velocity.x, this.player.velocity.y + this.gravity);				
+								
+				for (var i = this.block_array.length - 1; i > 0; i--){
+					var block = new Block();
+					block = this.block_array[i];
+					//collision detection
+					if (this.collisionDetect(this.player, block)){
+						//there is a collision
+						this.player.position.y = block.position.y - this.player.getHeight();
+						//stop the player falling
+						this.player.velocity.y = 0;
+						this.player.jumping = false;
+						//don't check anymore collisions
+						break;
+					}					
+				};
+				
 			} else {
 				//we hit the floor
 				this.player.jumping = false;
