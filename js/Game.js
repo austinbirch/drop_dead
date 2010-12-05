@@ -179,7 +179,10 @@ Game.prototype.timeout = function(){
 
 //update the positions etc
 Game.prototype.update = function(delta){
-			
+	
+	var originalPlayerPos = new Vector(this.player.position.x, this.player.position.y);	
+	
+	//
 		
 	//if space was pressed - JUMP!
 	if(this.player.jumping == false && this.space_key_down == true){
@@ -187,10 +190,7 @@ Game.prototype.update = function(delta){
 		this.player.jumping = true;
 		this.player.setVelocity(this.player.velocity.x, this.player.jump_speed);		
 	}
-	
-	var originalPlayerPos = new Vector(this.player.position.x, this.player.position.y);	
-	var newPlayerPos = new Vector(0, 0);
-		
+			
 	//if player is jumping
 	if(this.player.jumping == true){
 			//move player by y velocity
@@ -204,11 +204,11 @@ Game.prototype.update = function(delta){
 					var block = new Block();
 					block = this.block_array[i];
 					//collision detection
-					if (this.collisionDetect(this.player, block)){
+					if (this.collisionDetect(this.player.getBoundingRect(), block.getBoundingRect())){
 						//there is a collision
 						this.player.position.y = block.position.y - this.player.getHeight();
 						//stop the player falling
-						this.player.velocity.y = 0;
+						this.player.velocity.y = this.gravity;
 						this.player.jumping = false;
 						//don't check anymore collisions
 						break;
@@ -246,7 +246,7 @@ Game.prototype.update = function(delta){
 					var block = new Block();
 					block = this.block_array[i];
 					
-					if (this.collisionDetect(this.player, block) == true){
+					if (this.collisionDetect(this.player.getBoundingRect(), block.getBoundingRect()) == true){
 						//there is a collision
 						if (this.player.velocity.x > 0){
 							//player is moving right
@@ -302,7 +302,7 @@ Game.prototype.update = function(delta){
 					//make sure we are not testing against ourselves
 					if (block != blockB){
 						//test for collision
-						if (this.collisionDetect(block, blockB) == true){
+						if (this.collisionDetect(block.getBoundingRect(), blockB.getBoundingRect()) == true){
 							//if a collision exsits
 							//stop me
 							block.moving = false;
@@ -313,7 +313,7 @@ Game.prototype.update = function(delta){
 				}
 				
 				//collision detection against the player
-				if (this.collisionDetect(block, this.player)){
+				if (this.collisionDetect(block.getBoundingRect(), this.player.getBoundingRect())){
 					//this is a hit
 					// alert('BOOM, HEADSHOT!');
 					this.alert_message = "BOOM, HEADSHOT!";
@@ -387,10 +387,10 @@ Game.prototype.draw = function(){
 		
 };
 
-Game.prototype.collisionDetect = function(objA, objB) {
+Game.prototype.collisionDetect = function(rectA, rectB) {
 	// detect for a collision between two objects - each object should report it's bounding box as a 'Rect'
-	rectA = objA.getBoundingRect();
-	rectB = objB.getBoundingRect();
+	//rectA = objA.getBoundingRect();
+	//rectB = objB.getBoundingRect();
 	
 	leftA = rectA.x;
 	rightA = rectA.x + rectA.width;
