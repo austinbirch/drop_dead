@@ -54,7 +54,7 @@ var Game = function(){
 	//background
 	this.imageManager.addImage("bg", "./images/bg.png");
 	//blocks
-	this.imageManager.addImage("blockImage", "./images/block.png");
+	this.imageManager.addImage("blockImage", "./images/block-alt.png");
 	//floor
 	this.imageManager.addImage("floorImage", "./images/floor_two.png");
 	//load the images, pass the context
