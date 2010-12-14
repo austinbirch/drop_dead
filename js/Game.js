@@ -127,7 +127,7 @@ Game.prototype.initGame = function(){
 	this.ground = this.floor.position.y;
 		
 	//put the player in the starting position
-	this.player.setPosition(400, (this.floor.position.y - this.player.getHeight()));
+	this.player.setPosition(100, (this.floor.position.y - this.player.getHeight()));
 		
 	//show the canvas	
 	this.canvas.fadeIn(1000);
@@ -181,8 +181,6 @@ Game.prototype.timeout = function(){
 Game.prototype.update = function(delta){
 	
 	var originalPlayerPos = new Vector(this.player.position.x, this.player.position.y);	
-	
-	//
 		
 	//if space was pressed - JUMP!
 	if(this.player.jumping == false && this.space_key_down == true){
@@ -190,8 +188,8 @@ Game.prototype.update = function(delta){
 		this.player.jumping = true;
 		this.player.setVelocity(this.player.velocity.x, this.player.jump_speed);		
 	}
-			
-	//if player is jumping
+				
+	//if player is jumping -- update the velocity 
 	if(this.player.jumping == true){
 			//move player by y velocity
 			//decrement y by gravity
@@ -199,29 +197,52 @@ Game.prototype.update = function(delta){
 				//move the player
 				this.player.position.y = this.player.position.y + this.player.velocity.y;
 				this.player.setVelocity(this.player.velocity.x, this.player.velocity.y + this.gravity);				
-								
-				for (var i = this.block_array.length - 1; i > 0; i--){
-					var block = new Block();
-					block = this.block_array[i];
-					//collision detection
-					if (this.collisionDetect(this.player.getBoundingRect(), block.getBoundingRect())){
-						//there is a collision
-						this.player.position.y = block.position.y - this.player.getHeight();
-						//stop the player falling
-						this.player.velocity.y = this.gravity;
-						this.player.jumping = false;
-						//don't check anymore collisions
-						break;
-					}					
-				};
-				
 			} else {
 				//we hit the floor
 				this.player.jumping = false;
 				//set to be on the floor 
 				this.player.setPosition(this.player.position.x, this.ground - this.player.getHeight());
 			}
+	} else {
+		//we're not jumping so maybe check for a fall
+		for (var i = this.block_array.length - 1; i > 0; i--){
+			var block = new Block();
+			var collision = false;
+			block = this.block_array[i];
+			//collsion dection with extended bounds
+			var newBounds = new Rect();
+			newBounds = this.player.getBoundingRect();
+			newBounds.height += 16;
+			if (this.collisionDetect(newBounds, block.getBoundingRect())){
+				//there is a collsion, don't fall
+				collision = true;
+				break;
+			}			
+		};
+		
+		if (collision == false){
+			//no collsion, we should move
+			this.player.jumping = true;
+		}
+		
 	}
+	
+	//vertical collision detection - actual
+	for (var i = this.block_array.length - 1; i > 0; i--){
+		var block = new Block();
+		block = this.block_array[i];
+		//collision detection
+		if (this.collisionDetect(this.player.getBoundingRect(), block.getBoundingRect())){
+			//there is a collision
+			this.player.position.y = block.position.y - this.player.getHeight();
+			//stop the player falling
+			this.player.velocity.y = this.gravity;
+			this.player.jumping = false;
+			//don't check anymore collisions
+			break;
+		}					
+	};
+		
 
 	if(this.player.moving == false && this.right_key_down == true){
 		//start moving the player to the right
