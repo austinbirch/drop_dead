@@ -20,13 +20,20 @@
 		$.get("RECENT_CHANGES", function(data){
 			$("#changes").append(data);
 		});
+		
+		$.get("THINGS", function(data){
+			$("#things").append(data);
+		});
 			
 	</script>
 	
 </head>
 <body>
 	<div id="wrapper">
-		<div id="title"><h3>drop_dead</h3></div>
+		<div id="title">
+			<h3>drop_dead</h3>
+			<p class="small_text">by <a href="http://www.twitter.com/austinbirch">Austin Birch</a></p>
+		</div>
 			<div id="canvas_wrapper">
 				<canvas id="canvas">
 
@@ -40,6 +47,10 @@
 			<div id="recent_changes">
 				<h3>Recent Changes</h3><p><em>(these may not load in Chrome yet.)</em></p>
 				<pre id="changes"></pre>
+			</div>
+			
+			<div id="things">
+				<h3>Things to do, plus other information</h3>
 			</div>
 	</div><!-- #wrapper -->
 </body>
