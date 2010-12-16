@@ -2,7 +2,7 @@
 
 var BlockPlayer = function(){
 	//player color
-	this.color = "rgba(255, 0, 0, 1)";
+	this.color = "rgba(255, 0, 0, 0.2)";
 	this.player_name = "enemy";
 	
 	//default player position
