@@ -6,6 +6,7 @@ var ARROW = { LEFT: 37, UP: 38, RIGHT: 39, DOWN: 40 };
 var A = 65;
 var D = 68;
 var S = 83;
+var R = 82;
 
 //game status faux-constants
 var GAME_RUNNING = 1;
@@ -21,6 +22,9 @@ var color_hash = { red: "rgba(255, 0, 0, 0.3)",
 
 //constructor - init objects 
 var Game = function(){
+	
+	//game timer 
+	this.game_timer;
 				
 	//keypress vars
 	this.left_key_down = false
@@ -30,6 +34,7 @@ var Game = function(){
 	this.a_key_down = false;
 	this.d_key_down = false;
 	this.s_key_down = false;
+	
 	
 	//the simple AI
 	this.ai_on = true;
@@ -156,6 +161,34 @@ Game.prototype.initGame = function(){
 	this.timeout();
 };
 
+//restart the game, ready for again-ness
+Game.prototype.restart_game = function() {
+	//clear timer
+	clearTimeout(this.game_timer);
+	//reset stuff
+	this.previous_tick = 0;
+	this.current_tick = 0;
+	this.frames_per_second = 60;
+	this.current_fps = 0;
+	this.frames = 0;
+	this.accumulator = 0;
+	
+	//keypress vars
+	this.left_key_down = false
+	this.right_key_down = false;
+	this.space_key_down = false;
+	
+	this.a_key_down = false;
+	this.d_key_down = false;
+	this.s_key_down = false;
+	
+	//start the game
+	this.status = GAME_RUNNING;
+	this.alert_message = "";
+	this.initObjects();
+};
+
+
 //main loop - lets try a variable speed one ;-)
 Game.prototype.timeout = function(){
 	//store the previous tick
@@ -194,7 +227,7 @@ Game.prototype.timeout = function(){
 		
 	 var self = this;
 	// 	var fps = 60;
-	setTimeout(function() { self.timeout() }, 1000/this.frames_per_second);
+	this.game_timer = setTimeout(function() { self.timeout() }, 1000/this.frames_per_second);
 };
 
 //update the positions etc
@@ -414,7 +447,7 @@ Game.prototype.update = function(delta){
 	switch (this.status){
 			case GAME_OVER:
 			//display a giant restart message
-			this.alert_message = "YOUR'E DEAD! <br>PRESS R TO RESTART";
+			this.alert_message = "DEAD! R TO RESTART";
 			this.alert_opacity = 0.7;
 			break;
 		}
@@ -591,6 +624,9 @@ Game.prototype.keyUp = function(e) {
 		case S:
 			self.s_key_down = false;
 			break;
+		case R:
+			console.log('R');
+			self.restart_game();
 	};
 };
 

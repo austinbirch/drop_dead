@@ -2,17 +2,20 @@
 
 //constructor
 var AI = function(){
-	//how quickly our AI can move, how often it drops blocks
-	this.difficulty = 0.8;
-	
-	this.max_fire_rate = 1;
-	
+	//how quickly our AI can move, how often it drops blocks 
+	//higher is more difficult
+	this.difficulty = 0.5;
+		
 	//the block that represents the AI
 	this.block = new BlockPlayer();
 	this.block.player_name = "AI";
 	
 	this.deltaAccumulator = 0;
 	
+	this.fire_rate = 1;
+	
+	this.fire_accumulator = 0;
+		
 };
 
 AI.prototype.update = function(delta, playerPosX) {
@@ -50,7 +53,21 @@ AI.prototype.update = function(delta, playerPosX) {
 
 AI.prototype.fire = function(delta, blockArray, imageManager) {
 	//replace this function
-	this.block.fireBlock(delta, blockArray, imageManager);
+	// this.block.fireBlock(delta, blockArray, imageManager);	
+	
+	this.fire_accumulator += delta;
+		
+	if (this.fire_accumulator > this.fire_rate){
+		var firedBlock = new Block();
+		firedBlock.color = this.block.color;
+		firedBlock.position = new Vector(this.block.position.x, this.block.position.y);
+		firedBlock.moving = true;
+		//set the block image
+		firedBlock.setBlockImage(imageManager);
+		blockArray.push(firedBlock);
+		this.fire_accumulator = 0;
+	}
+	
 };
 
 
