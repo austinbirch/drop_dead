@@ -7,6 +7,11 @@ var A = 65;
 var D = 68;
 var S = 83;
 
+//game status faux-constants
+var GAME_RUNNING = 1;
+var GAME_PAUSED = 2;
+var GAME_OVER = 3;
+
 //block colors
 var color_hash = { red: "rgba(255, 0, 0, 0.3)",
  										green: "rgba(0, 255, 0, 0.3)",
@@ -25,6 +30,12 @@ var Game = function(){
 	this.a_key_down = false;
 	this.d_key_down = false;
 	this.s_key_down = false;
+	
+	//the simple AI
+	this.ai_on = true;
+	
+	//game_vars
+	this.status = GAME_RUNNING;
 	
 	//global gravity
 	this.gravity = 0.5;
@@ -87,6 +98,15 @@ Game.prototype.initObjects = function() {
 	this.playerBlock.setColor(color_hash.fuchsia);
 	//set the players width
 	this.playerBlock.width = this.block_width;
+	
+	if (this.ai_on){
+		//make an AI player
+		this.AI = new AI();
+		//set the AI block width - hacky
+		this.AI.block.width = this.block_width;
+		//give it a handle on the block array
+		this.AI.target_block_array = this.block_array;
+	}
 	
 	//block objects array
 	this.block_array = new Array();
@@ -180,188 +200,224 @@ Game.prototype.timeout = function(){
 //update the positions etc
 Game.prototype.update = function(delta){
 	
-	var originalPlayerPos = new Vector(this.player.position.x, this.player.position.y);	
+	if(this.status == GAME_RUNNING){
+	
+		var originalPlayerPos = new Vector(this.player.position.x, this.player.position.y);	
 		
-	//if space was pressed - JUMP!
-	if(this.player.jumping == false && this.space_key_down == true){
-		//start making the player jump
-		this.player.jumping = true;
-		this.player.setVelocity(this.player.velocity.x, this.player.jump_speed);		
-	}
+		//if space was pressed - JUMP!
+		if(this.player.jumping == false && this.space_key_down == true){
+			//start making the player jump
+			this.player.jumping = true;
+			this.player.setVelocity(this.player.velocity.x, this.player.jump_speed);		
+		}
 				
-	//if player is jumping -- update the velocity 
-	if(this.player.jumping == true){
-			//move player by y velocity
-			//decrement y by gravity
-			if (this.player.position.y + this.player.velocity.y < (this.ground - this.player.getHeight())){
-				//move the player
-				this.player.position.y = this.player.position.y + this.player.velocity.y;
-				this.player.setVelocity(this.player.velocity.x, this.player.velocity.y + this.gravity);				
-			} else {
-				//we hit the floor
-				this.player.jumping = false;
-				//set to be on the floor 
-				this.player.setPosition(this.player.position.x, this.ground - this.player.getHeight());
+		//if player is jumping -- update the velocity 
+		if(this.player.jumping == true){
+				//move player by y velocity
+				//decrement y by gravity
+				if (this.player.position.y + this.player.velocity.y < (this.ground - this.player.getHeight())){
+					//move the player
+					this.player.position.y = this.player.position.y + this.player.velocity.y;
+					this.player.setVelocity(this.player.velocity.x, this.player.velocity.y + this.gravity);				
+				} else {
+					//we hit the floor
+					this.player.jumping = false;
+					//set to be on the floor 
+					this.player.setPosition(this.player.position.x, this.ground - this.player.getHeight());
+				}
+		} else {
+			//we're not jumping so maybe check for a fall
+			for (var i = this.block_array.length - 1; i > 0; i--){
+				var block = new Block();
+				var collision = false;
+				block = this.block_array[i];
+				//collsion dection with extended bounds
+				var newBounds = new Rect();
+				newBounds = this.player.getBoundingRect();
+				newBounds.height += 16;
+				if (this.collisionDetect(newBounds, block.getBoundingRect())){
+					//there is a collsion, don't fall
+					collision = true;
+					break;
+				}			
+			};
+		
+			if (collision == false){
+				//no collsion, we should move
+				this.player.jumping = true;
 			}
-	} else {
-		//we're not jumping so maybe check for a fall
+		
+		}
+	
+		//vertical collision detection - actual
 		for (var i = this.block_array.length - 1; i > 0; i--){
 			var block = new Block();
-			var collision = false;
 			block = this.block_array[i];
-			//collsion dection with extended bounds
-			var newBounds = new Rect();
-			newBounds = this.player.getBoundingRect();
-			newBounds.height += 16;
-			if (this.collisionDetect(newBounds, block.getBoundingRect())){
-				//there is a collsion, don't fall
-				collision = true;
+			//collision detection
+			if (this.collisionDetect(this.player.getBoundingRect(), block.getBoundingRect())){
+				//there is a collision
+				this.player.position.y = block.position.y - this.player.getHeight();
+				//stop the player falling
+				this.player.velocity.y = this.gravity;
+				this.player.jumping = false;
+				//don't check anymore collisions
 				break;
-			}			
+			}					
 		};
 		
-		if (collision == false){
-			//no collsion, we should move
-			this.player.jumping = true;
-		}
-		
-	}
-	
-	//vertical collision detection - actual
-	for (var i = this.block_array.length - 1; i > 0; i--){
-		var block = new Block();
-		block = this.block_array[i];
-		//collision detection
-		if (this.collisionDetect(this.player.getBoundingRect(), block.getBoundingRect())){
-			//there is a collision
-			this.player.position.y = block.position.y - this.player.getHeight();
-			//stop the player falling
-			this.player.velocity.y = this.gravity;
-			this.player.jumping = false;
-			//don't check anymore collisions
-			break;
-		}					
-	};
-		
 
-	if(this.player.moving == false && this.right_key_down == true){
-		//start moving the player to the right
-		this.player.moving = true;
-		this.player.setVelocity(+this.player.speed, this.player.velocity.y);
-	} else if (this.player.moving == false && this.left_key_down == true){
-		//start moving the player to the left
-		this.player.moving = true;
-		this.player.setVelocity(-this.player.speed, this.player.velocity.y);
-	} else {
-		this.player.moving = false;
-	}
+		if(this.player.moving == false && this.right_key_down == true){
+			//start moving the player to the right
+			this.player.moving = true;
+			this.player.setVelocity(+this.player.speed, this.player.velocity.y);
+		} else if (this.player.moving == false && this.left_key_down == true){
+			//start moving the player to the left
+			this.player.moving = true;
+			this.player.setVelocity(-this.player.speed, this.player.velocity.y);
+		} else {
+			this.player.moving = false;
+		}
 	
-	//if the player is moving, then move
-	if (this.player.moving == true){
-		var newPositionX = this.player.position.x + this.player.velocity.x;
-		if (newPositionX > 0 && newPositionX < (canvas.width - this.player.getWidth())){
-				//if within bounds of the canvas
-				this.player.position.x = newPositionX;
-				//test for collision				
-				for (var i = (this.block_array.length - 1); i > 0; i--){
-					var block = new Block();
-					block = this.block_array[i];
+		//if the player is moving, then move
+		if (this.player.moving == true){
+			var newPositionX = this.player.position.x + this.player.velocity.x;
+			if (newPositionX > 0 && newPositionX < (canvas.width - this.player.getWidth())){
+					//if within bounds of the canvas
+					this.player.position.x = newPositionX;
+					//test for collision				
+					for (var i = (this.block_array.length - 1); i > 0; i--){
+						var block = new Block();
+						block = this.block_array[i];
 					
-					if (this.collisionDetect(this.player.getBoundingRect(), block.getBoundingRect()) == true){
-						//there is a collision
-						if (this.player.velocity.x > 0){
-							//player is moving right
-							this.player.position.x = block.position.x - this.player.getWidth();	
-						}else if (this.player.velocity.x < 0){
-							//the player is moving left
-							this.player.position.x = block.position.x + block.getWidth();
+						if (this.collisionDetect(this.player.getBoundingRect(), block.getBoundingRect()) == true){
+							//there is a collision
+							if (this.player.velocity.x > 0){
+								//player is moving right
+								this.player.position.x = block.position.x - this.player.getWidth();	
+							}else if (this.player.velocity.x < 0){
+								//the player is moving left
+								this.player.position.x = block.position.x + block.getWidth();
+							}
 						}
-					}
-				};
-		}
-	}
-	
-	//update the bock player
-	if (this.a_key_down == true){
-		//move left
-		if (this.playerBlock.position.x > 0){
-			//bounds detection okay, can move
-			this.playerBlock.updatePosition(delta, this.playerBlock.position.x - this.block_width);
-		}
-	} else if (this.d_key_down == true){
-		//move right
-		if (this.playerBlock.position.x < canvas.width - this.block_width){
-			this.playerBlock.updatePosition(delta, this.playerBlock.position.x + this.block_width);
-		}
-	}
-	
-	if (this.s_key_down == true){
-		//fire a block
-		this.playerBlock.fireBlock(delta, this.block_array, this.imageManager);
-	}
-	
-	//update the background
-	// newPlayerPos = new Vector(this.player.position.x, this.player.position.y);
-	// 	deltaPos = new Vector(originalPlayerPos.x - newPlayerPos.x, originalPlayerPos.y - newPlayerPos.y);
-	// 	this.background.updatePosition(deltaPos);
-		
-	//update blocks
-	for (var x = (this.block_array.length - 1); x > 0; x--){
-		var block = new Block();
-		block = this.block_array[x];
-				
-		//block vs block collision detection
-		if (block.moving == true){
-			if (block.position.y < (this.ground - block.getHeight())){
-				block.setVelocity(0, block.velocity.y + this.gravity)
-				block.position.y = block.position.y + block.velocity.y;
-				
-				//collision detection against other blocks
-				for (var y = (this.block_array.length - 1); y > 0; y--){
-					var blockB = new Block();
-					blockB = this.block_array[y];
-					//make sure we are not testing against ourselves
-					if (block != blockB){
-						//test for collision
-						if (this.collisionDetect(block.getBoundingRect(), blockB.getBoundingRect()) == true){
-							//if a collision exsits
-							//stop me
-							block.moving = false;
-							block.velocity.y = 0;
-							block.position.y = blockB.position.y - block.getHeight();
-						}
-					}
-				}
-				
-				//collision detection against the player
-				if (this.collisionDetect(block.getBoundingRect(), this.player.getBoundingRect())){
-					//this is a hit
-					// alert('BOOM, HEADSHOT!');
-					this.alert_message = "BOOM, HEADSHOT!";
-					if (this.alert_opacity != 0.7){
-						//there is already a alert in progress, force a new one
-						this.alert_opacity = 0.7;
-					}
-				}
-				
-			}else{
-				//hit the floor
-				block.position.y = this.ground - block.getHeight();
-				block.moving = false;
-				block.velocity.y = 0;
+					};
 			}
 		}
-	} // end of for loop
 	
-	//alter the alert message opacity, if there is one
-	if (this.alert_message != ""){
-		this.alert_opacity -= 0.008;
-		if (this.alert_opacity < 0.02) { 
-			//reset message & opacity
-			this.alert_message = "";
-			this.alert_opacity = 0.7;
+		//update the bock player
+		if (this.a_key_down == true){
+			//move left
+			if (this.playerBlock.position.x > 0){
+				//bounds detection okay, can move
+				this.playerBlock.updatePosition(delta, this.playerBlock.position.x - this.block_width);
+			}
+		} else if (this.d_key_down == true){
+			//move right
+			if (this.playerBlock.position.x < canvas.width - this.block_width){
+				this.playerBlock.updatePosition(delta, this.playerBlock.position.x + this.block_width);
+			}
 		}
-	}
+	
+		if (this.s_key_down == true){
+			//fire a block
+			this.playerBlock.fireBlock(delta, this.block_array, this.imageManager);
+		}
+	
+		//update the background
+		// newPlayerPos = new Vector(this.player.position.x, this.player.position.y);
+		// 	deltaPos = new Vector(originalPlayerPos.x - newPlayerPos.x, originalPlayerPos.y - newPlayerPos.y);
+		// 	this.background.updatePosition(deltaPos);
+		
+		//update blocks
+		for (var x = (this.block_array.length - 1); x > 0; x--){
+			var block = new Block();
+			block = this.block_array[x];
+				
+			//block vs block collision detection
+			if (block.moving == true){
+				if (block.position.y < (this.ground - block.getHeight())){
+					block.setVelocity(0, block.velocity.y + this.gravity)
+					block.position.y = block.position.y + block.velocity.y;
+				
+					//collision detection against other blocks
+					for (var y = (this.block_array.length - 1); y > 0; y--){
+						var blockB = new Block();
+						blockB = this.block_array[y];
+						//make sure we are not testing against ourselves
+						if (block != blockB){
+							//test for collision
+							if (this.collisionDetect(block.getBoundingRect(), blockB.getBoundingRect()) == true){
+								//if a collision exsits
+								//stop me
+								block.moving = false;
+								block.velocity.y = 0;
+								block.position.y = blockB.position.y - block.getHeight();
+							}
+						}
+					}
+				
+					//collision detection against the player
+					if (this.collisionDetect(block.getBoundingRect(), this.player.getBoundingRect())){
+						//this is a hit
+						
+						//check for player death					
+						if (this.player.lives <= 0){
+							//player is dead!
+							this.alert_message = "YOU'RE DEAD!";
+							this.status = GAME_OVER;
+							if (this.alert_opacity != 0.7){
+								//there is already a alert in progress, force a new one
+								this.alert_opacity = 0.7;
+							}
+						}else{
+							// alert('BOOM, HEADSHOT!');
+							this.alert_message = "BOOM, HEADSHOT!";
+							//remove a life from the player
+							this.player.lives--;
+							if (this.alert_opacity != 0.7){
+								//there is already a alert in progress, force a new one
+								this.alert_opacity = 0.7;
+							}
+						}
+					}
+				
+				}else{
+					//hit the floor
+					block.position.y = this.ground - block.getHeight();
+					block.moving = false;
+					block.velocity.y = 0;
+				}
+			}
+		} // end of for loop
+	
+		//update the ai, if it's turned on
+		if(this.ai_on){
+			this.AI.update(delta, this.player.position.x);
+		
+			if (this.AI.firing){
+				//fire a block
+				this.AI.fire(delta, this.block_array, this.imageManager);
+			}
+		}
+	
+	
+		//alter the alert message opacity, if there is one
+		if (this.alert_message != ""){
+			this.alert_opacity -= 0.008;
+			if (this.alert_opacity < 0.02) { 
+				//reset message & opacity
+				this.alert_message = "";
+				this.alert_opacity = 0.7;
+			}
+		}	
+	} // end of if
+	
+	switch (this.status){
+			case GAME_OVER:
+			//display a giant restart message
+			this.alert_message = "YOUR'E DEAD! <br>PRESS R TO RESTART";
+			this.alert_opacity = 0.7;
+			break;
+		}
 		
 };
 
@@ -387,6 +443,9 @@ Game.prototype.draw = function(){
 	
 	//draw the block player
 	this.playerBlock.draw(this.context);
+	
+	//draw the AI
+	this.AI.draw(this.context);
 	
 	//display the current fps
 	this.context.fillStyle = "rgb(255, 255, 255)";

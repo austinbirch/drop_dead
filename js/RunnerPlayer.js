@@ -24,6 +24,9 @@ var RunnerPlayer = function(){
 	//player jump speed
 	this.jump_speed = -7;
 	
+	this.max_lives = 2;
+	this.lives = this.max_lives;
+	
 	//default acceleration
 	this.defaultAcceleration = 5;
 	//current acceleration
@@ -61,6 +64,9 @@ RunnerPlayer.prototype.draw = function(ctx) {
 	ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
 	ctx.font = "10px Monaco, Courier";
 	ctx.fillText(this.player_name, (this.position.x - 10), (this.position.y - 5));
+
+	//draw the player lives 
+	ctx.fillText("lives left: " + this.lives, (ctx.canvas.width - 100), 20);
 };
 
 //set the position of the player
