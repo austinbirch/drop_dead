@@ -7,11 +7,13 @@ var A = 65;
 var D = 68;
 var S = 83;
 var R = 82;
+var C = 67;
 
 //game status faux-constants
 var GAME_RUNNING = 1;
 var GAME_PAUSED = 2;
 var GAME_OVER = 3;
+var GAME_RUNNER_WON = 4;
 
 //block colors
 var color_hash = { red: "rgba(255, 0, 0, 0.3)",
@@ -37,7 +39,7 @@ var Game = function(){
 	
 	
 	//the simple AI
-	this.ai_on = true;
+	this.ai_on = false;
 	
 	//game_vars
 	this.status = GAME_RUNNING;
@@ -89,6 +91,9 @@ Game.prototype.initObjects = function() {
 	this.floor = null;
 	this.floor = new Floor();
 	this.floor.setFloorImage(this.imageManager);
+	
+	//the target height
+	this.target_height = null;
 	
 	//make a runner player
 	this.player = new RunnerPlayer();
@@ -147,6 +152,9 @@ Game.prototype.initGame = function(){
 	this.floor.setWidth(canvas.width);
 	//set the position of the floor
 	this.floor.setPosition(0, (canvas.height - this.floor.getTileWidth()));
+	
+	//set up the target height
+	this.target_height = (canvas.height / 100) * 20;
 	
 	//get the ground position
 	this.ground = this.floor.position.y;
@@ -236,7 +244,7 @@ Game.prototype.update = function(delta){
 	if(this.status == GAME_RUNNING){
 	
 		var originalPlayerPos = new Vector(this.player.position.x, this.player.position.y);	
-		
+				
 		//if space was pressed - JUMP!
 		if(this.player.jumping == false && this.space_key_down == true){
 			//start making the player jump
@@ -431,6 +439,15 @@ Game.prototype.update = function(delta){
 				this.AI.fire(delta, this.block_array, this.imageManager);
 			}
 		}
+		
+		//has the player won?
+		if ((this.player.position.y + this.player.getHeight()) < this.target_height && this.player.lives >= 0){
+			this.status = GAME_RUNNER_WON;
+			if (this.alert_opacity != 0.7){
+				//alert in progress, force a new one
+				this.alert_opacity = 0.7;
+			}
+		}
 	
 	
 		//alter the alert message opacity, if there is one
@@ -445,11 +462,16 @@ Game.prototype.update = function(delta){
 	} // end of if
 	
 	switch (this.status){
+			case GAME_RUNNER_WON:
+				//display a giant restart message
+				this.alert_message = "WIN! R TO RESTART"
+				this.alert_opacity = 0.7;
+				break;
 			case GAME_OVER:
-			//display a giant restart message
-			this.alert_message = "DEAD! R TO RESTART";
-			this.alert_opacity = 0.7;
-			break;
+				//display a giant restart message
+				this.alert_message = "DEAD! R TO RESTART";
+				this.alert_opacity = 0.7;
+				break;
 		}
 		
 };
@@ -478,16 +500,32 @@ Game.prototype.draw = function(){
 	this.playerBlock.draw(this.context);
 	
 	//draw the AI
-	this.AI.draw(this.context);
+	if(this.ai_on){
+		this.AI.draw(this.context);
+	}
 	
 	//display the current fps
 	this.context.fillStyle = "rgb(255, 255, 255)";
 	this.context.font = "12px Courier";
 	this.context.fillText("fps: " + this.current_fps, 10, 20);
 	
+	//display the ai status
+	if(this.ai_on){
+		this.context.fillText("ai: on", (this.canvas.width() - 100), 35);
+	}else{
+		this.context.fillText("ai: off", (this.canvas.width() - 100), 35);
+	}
+	
+	//draw the target line
+	this.context.fillStyle = "rgba(255, 255, 255, 0.5)";
+	this.context.fillRect(0, this.target_height, this.canvas.width(), 1);
+	//draw the target label
+	this.context.font = "14px Courier";
+	this.context.fillText("target line", 10, this.target_height);
+	
 	//draw the floor last - hides some of the overshooting of blocks
 	this.floor.draw(this.context);
-	
+		
 	//draw the alert message over everything else
 	if (this.alert_message != ""){
 		this.context.font = "64px Courier";		
@@ -497,7 +535,7 @@ Game.prototype.draw = function(){
 		//reset the text align for the context
 		this.context.textAlign = "left";		
 	}
-		
+			
 };
 
 Game.prototype.collisionDetect = function(rectA, rectB) {
@@ -626,6 +664,14 @@ Game.prototype.keyUp = function(e) {
 			break;
 		case R:
 			console.log('R');
+			self.restart_game();
+			break;
+		case C:
+			if(self.ai_on == true){
+				self.ai_on = false;
+			}else{
+				self.ai_on = true;
+			}
 			self.restart_game();
 	};
 };

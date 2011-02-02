@@ -8,7 +8,7 @@ body {
 
 #title {
 	font: 24px/100% "Monaco", "Courier", monospace;
-	padding-bottom: 13px;
+	padding-bottom: 9px;
 }
 
 #wrapper {
@@ -26,19 +26,19 @@ body {
 }
 
 #recent_changes {
-	background-color: #efefef;
-	-webkit-border-radius: 5px;
-	border: 2px solid #666;
-	padding: 6px;
+	margin-top: 18px;
 	margin-bottom: 18px;
+	padding-top: 9px;
+	padding-bottom: 9px;
+	border-top: 1px solid #333;
 }
 
 #things { 
-	background-color: #efefef;
-	-webkit-border-radius: 5px;
-	border: 2px solid #666;
-	padding: 6px;
+	margin-top: 18px;
 	margin-bottom: 18px;
+	padding-top: 9px;
+	padding-bottom: 9px;
+	border-bottom: 1px solid #333;
 }
 
 #changes {
@@ -50,6 +50,6 @@ body {
 	display: none;
 }
 
-p {font: 13px/150% monospace; }
+p {font: 13px/18px "Courier", monospace; }
 h3 { margin: 0em; }
 .small_text { font-size: 10px; }

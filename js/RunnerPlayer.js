@@ -22,7 +22,7 @@ var RunnerPlayer = function(){
 	this.boundingRect = new Rect(0, 0, 0, 0);
 	
 	//player jump speed
-	this.jump_speed = -7;
+	this.jump_speed = -70;
 	
 	this.max_lives = 2;
 	this.lives = this.max_lives;
@@ -61,8 +61,8 @@ RunnerPlayer.prototype.update = function(delta) {
 RunnerPlayer.prototype.draw = function(ctx) {
 	ctx.drawImage(this.playerImage, this.position.x, this.position.y);
 	//draw the player text
-	ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
-	ctx.font = "10px Monaco, Courier";
+	ctx.fillStyle = "rgb(255, 255, 255)";
+	ctx.font = "12px Courier";
 	ctx.fillText(this.player_name, (this.position.x - 10), (this.position.y - 5));
 
 	//draw the player lives 
