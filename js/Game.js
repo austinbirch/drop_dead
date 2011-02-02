@@ -154,7 +154,7 @@ Game.prototype.initGame = function(){
 	this.floor.setPosition(0, (canvas.height - this.floor.getTileWidth()));
 	
 	//set up the target height
-	this.target_height = (canvas.height / 100) * 20;
+	this.target_height = (canvas.height / 100) * 22;
 	
 	//get the ground position
 	this.ground = this.floor.position.y;
