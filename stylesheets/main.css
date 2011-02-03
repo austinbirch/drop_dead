@@ -52,3 +52,6 @@ body {
 p {font: 13px/18px "Courier", monospace; }
 h3 { margin: 0em; }
 .small_text { font-size: 10px; }
+
+ul { list-style: none; }
+li { padding-left: 9px; }
