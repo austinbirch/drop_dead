@@ -1,17 +1,1 @@
-//rect object - used for storing bounding box
-
-//constructor
-var Rect = function (x, y, width, height){
-	this.x = x;
-	this.y = y;
-	this.width = width;
-	this.height = height;
-	
-}
-
-Rect.prototype.setRect = function(x, y, width, height) {
-	this.x = x;
-	this.y = y;
-	this.width = width;
-	this.height = height;
-};
+var Rect=function(g,e,f,h){this.x=g;this.y=e;this.width=f;this.height=h};Rect.prototype.setRect=function(g,e,f,h){this.x=g;this.y=e;this.width=f;this.height=h};

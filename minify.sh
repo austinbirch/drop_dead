@@ -13,9 +13,8 @@ minify_js() {
     for jsfile in $jslist
     do
         echo "Processing: ${jsfile}"
-        java -jar ${YUICOMPRESSOR} -o ${jsfile%.*}.js ${jsfile}
-    done
-    
+        java -jar ${YUICOMPRESSOR} -o ${jsfile} ${jsfile}
+    done    
 }
 
 minify_css() {
