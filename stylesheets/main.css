@@ -34,11 +34,11 @@ body {
 }
 
 #things { 
+	border-top: 1px solid #333;
 	margin-top: 18px;
 	margin-bottom: 18px;
 	padding-top: 9px;
 	padding-bottom: 9px;
-	border-bottom: 1px solid #333;
 }
 
 #changes {
