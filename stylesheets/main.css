@@ -50,8 +50,12 @@ body {
 }
 
 p {font: 13px/18px "Courier", monospace; }
+p.complete { text-decoration: line-through; }
 h3 { margin: 0em; }
 .small_text { font-size: 10px; }
+
+a { color: #8e0020; text-decoration: none; }
+a:hover { color: #f9f9f9; background-color: #8e0020; }
 
 ul { list-style: none; }
 li { padding-left: 9px; }

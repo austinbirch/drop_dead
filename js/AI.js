@@ -3,7 +3,7 @@
 //constructor
 var AI = function(){
 	//how quickly our AI can move, how often it drops blocks 
-	//higher is more difficult
+	//lower is more difficult
 	this.difficulty = 0.5;
 		
 	//the block that represents the AI
