@@ -2,7 +2,7 @@
 
 //constructor
 var Animation = function (data, sprite_sheet){
-	this.frameDuration = 0.2;
+	this.frameDuration = 0.1;
 	this.displayDuration = this.frameDuration;
 	this.currentFrame = 0;
 	this.frames = data;
