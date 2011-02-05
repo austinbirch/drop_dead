@@ -140,11 +140,13 @@ RunnerPlayer.prototype.setVelocity = function(x, y) {
 
 //return the player's width
 RunnerPlayer.prototype.getWidth = function() {
-	return this.playerImage.width;
+	//TODO FIX THIS!
+	return 15;
 };
 //return the player's height
 RunnerPlayer.prototype.getHeight = function() {
-	return this.playerImage.height;
+	//TODO FIX THIS!
+	return 29;
 };
 
 RunnerPlayer.prototype.getBoundingRect = function() {
