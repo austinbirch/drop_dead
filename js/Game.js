@@ -69,6 +69,10 @@ var Game = function(){
 	this.imageManager.addImage("runnerImageWhite", "./images/runnerWhite.png");
 	this.imageManager.addImage("runnerImageFuchsia", "./images/runnerFuchsia.png");
 	this.imageManager.addImage("runnerImageGreen", "./images/runnerGreen.png");
+	
+	//player sprite sheet
+	this.imageManager.addImage("runnerSpriteSheet", "./images/runnerPlayer.png");
+	
 	//background
 	this.imageManager.addImage("bg", "./images/bg.png");
 	//blocks
@@ -240,7 +244,7 @@ Game.prototype.timeout = function(){
 
 //update the positions etc
 Game.prototype.update = function(delta){
-	
+		
 	if(this.status == GAME_RUNNING){
 	
 		var originalPlayerPos = new Vector(this.player.position.x, this.player.position.y);	
@@ -318,7 +322,22 @@ Game.prototype.update = function(delta){
 		} else {
 			this.player.moving = false;
 		}
-	
+		
+		//animation
+		if(this.player.moving == true && this.right_key_down == true){
+			//animate right
+			this.player.animate_right = true;
+			this.player.animate_left = false;
+			//actually animate
+			this.player.walk_right_animation.animate(delta);
+		}else if(this.player.moving == true && this.left_key_down == true){
+			//animate left
+			this.player.animate_left = true;
+			this.player.animate_right = false;
+			//actually animate
+			this.player.walk_left_animation.animate(delta);
+		}
+			
 		//if the player is moving, then move
 		if (this.player.moving == true){
 			var newPositionX = this.player.position.x + this.player.velocity.x;

@@ -1,7 +1,17 @@
 //player object
 
+var LAST_ANIM_LEFT = 1;
+var LAST_ANIM_RIGHT = 2;
+
 var RunnerPlayer = function(){
 	this.playerImage = null;
+	this.walk_right_animation = null;
+	this.walk_left_animation = null;
+	this.last_animation = null;
+	
+	//animate left or right?
+	this.animate_left = false;
+	this.animate_right = false;
 	
 	//player color - determines which image is loaded. default = black
 	this.color = "white";
@@ -36,20 +46,52 @@ var RunnerPlayer = function(){
 };
 
 RunnerPlayer.prototype.setPlayerImage = function(imageManager) {
-	switch (this.color) {
-		case 'fuchsia':
-			this.playerImage = imageManager.getImage("runnerImageFuchsia");
-			break;
-		case 'green':
-			this.playerImage = imageManager.getImage("runnerImageGreen");
-			break;
-		case 'white':
-			this.playerImage = imageManager.getImage("runnerImageWhite");
-			break;
-		default:
-			this.playerImage = imageManager.getImage("runnerImageWhite");
-			break;
-	}
+	// switch (this.color) {
+	// 	case 'fuchsia':
+	// 		this.playerImage = imageManager.getImage("runnerImageFuchsia");
+	// 		break;
+	// 	case 'green':
+	// 		this.playerImage = imageManager.getImage("runnerImageGreen");
+	// 		break;
+	// 	case 'white':
+	// 		this.playerImage = imageManager.getImage("runnerImageWhite");
+	// 		break;
+	// 	default:
+	// 		this.playerImage = imageManager.getImage("runnerImageWhite");
+	// 		break;
+	// }
+	
+	//set up the sprite sheet
+	this.playerImage = imageManager.getImage("runnerSpriteSheet");
+	
+	player_sprite_sheet = new SpriteSheet({
+		width: 15,
+		height: 29,
+		sprites: [
+			{ name: 'stand', x: 0, y: 0 },
+			{ name: 'walk_1', x: 0, y: 0 },
+			{ name: 'walk_2', x: 0, y: 0 },
+			{ name: 'stand_rev', x: 0, y: 0 },
+			{ name: 'walk_1_rev', x: 0, y: 0 },
+			{ name: 'walk_2_rev', x: 0, y: 0 }
+		]
+	});
+	
+	//set up the animations
+	this.walk_right_animation = new Animation([
+		{ sprite: 'walk_1' },
+		{ sprite: 'stand' },
+		{ sprite: 'walk_2' },
+		{ sprite: 'stand' },
+	], player_sprite_sheet);
+	
+	this.walk_left_animation = new Animation([
+		{ sprite: 'walk_1_rev' },
+		{ sprite: 'stand_rev' },
+		{ sprite: 'walk_2_rev' },
+		{ sprite: 'stand_rev' }
+	], player_sprite_sheet);
+	
 };
 
 RunnerPlayer.prototype.update = function(delta) {
@@ -59,7 +101,25 @@ RunnerPlayer.prototype.update = function(delta) {
 
 //draw the player
 RunnerPlayer.prototype.draw = function(ctx) {
-	ctx.drawImage(this.playerImage, this.position.x, this.position.y);
+	
+	var frame = null;
+	
+	if (this.animate_left){
+		//get the current frame position
+		frame = this.walk_left_animation.getSprite();
+	}else if(this.animate_right){
+		frame = this.walk_right_animation.getSprite();
+	}else if(this.animate_right == false && this.animate_left == false){
+		//no animation - just grab a standing frame
+		// if (this.last_animation == LAST_ANIM_RIGHT){
+		// 			frame = this.walk_right_animation.sprite_sheet.getFrame('stand');
+		// 		}else{
+		// 			frame = this.walk_left_animation.sprite_sheet.getFrame('stand_rev');
+		// 		}
+		frame = { x: 0, y: 0, width: 15, height: 29 };
+	}
+	//draw the players current frame	
+	ctx.drawImage(this.playerImage, frame.x, frame.y, 15, 29, this.position.x, this.position.y, 15, 29);
 	//draw the player text
 	ctx.fillStyle = "rgb(255, 255, 255)";
 	ctx.font = "12px Courier";
