@@ -336,7 +336,12 @@ Game.prototype.update = function(delta){
 			this.player.animate_right = false;
 			//actually animate
 			this.player.walk_left_animation.animate(delta);
-			console.log (this.player.getWidth());
+		}
+		
+		if(this.left_key_down == false && this.right_key_down == false){
+			//stop the animation
+			this.player.animate_left = false;
+			this.player.animate_right = false;
 		}
 			
 		//if the player is moving, then move

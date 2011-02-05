@@ -107,16 +107,17 @@ RunnerPlayer.prototype.draw = function(ctx) {
 	if (this.animate_left){
 		//get the current frame position
 		frame = this.walk_left_animation.getSprite();
+		this.last_animation = LAST_ANIM_LEFT;
 	}else if(this.animate_right){
+		this.last_animation = LAST_ANIM_RIGHT;
 		frame = this.walk_right_animation.getSprite();
 	}else if(this.animate_right == false && this.animate_left == false){
-		//no animation - just grab a standing frame
-		// if (this.last_animation == LAST_ANIM_RIGHT){
-		// 			frame = this.walk_right_animation.sprite_sheet.getFrame('stand');
-		// 		}else{
-		// 			frame = this.walk_left_animation.sprite_sheet.getFrame('stand_rev');
-		// 		}
-		frame = { x: 0, y: 0, width: 15, height: 29 };
+		// no animation - just grab a standing frame
+		if (this.last_animation == LAST_ANIM_RIGHT){
+					frame = this.walk_right_animation.sprite_sheet.getFrame('stand');
+		}else{
+					frame = this.walk_left_animation.sprite_sheet.getFrame('stand_rev');
+		}
 	}
 	//draw the players current frame	
 	ctx.drawImage(this.playerImage, frame.x, frame.y, 15, 29, this.position.x, this.position.y, 15, 29);
