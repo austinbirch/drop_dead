@@ -9,6 +9,7 @@ var S = 83;
 var R = 82;
 var C = 67;
 var Y = 89;
+var P = 80;
 
 //game status faux-constants
 var GAME_RUNNING = 1;
@@ -591,7 +592,7 @@ Game.prototype.update = function(delta){
 	
 	switch (this.status){
 			case GAME_LEVEL_WON:
-				this.alert_message = "START LVL " + (this.level + 1) + "? PRS Y"
+				this.alert_message = "START LVL " + (this.level + 1) + "? PRSS Y"
 				this.alert_opacity = 0.7;
 				break;
 			case GAME_RUNNER_WON:
@@ -602,6 +603,11 @@ Game.prototype.update = function(delta){
 			case GAME_OVER:
 				//display a giant restart message
 				this.alert_message = "DEAD! R TO RESTART";
+				this.alert_opacity = 0.7;
+				break;
+			case GAME_PAUSED:
+				//display paused message
+				this.alert_message = "PAUSED. P TO UNPAUSE";
 				this.alert_opacity = 0.7;
 				break;
 		}
@@ -802,6 +808,15 @@ Game.prototype.keyUp = function(e) {
 			break;
 		case S:
 			self.s_key_down = false;
+			break;
+		case P:
+			if (self.status == 2){
+				//if paused – set to running
+				self.status = 1;
+			}else{
+				//if not paused – set to paused
+				self.status = 2;
+			}
 			break;
 		case R:
 			console.log('R');
