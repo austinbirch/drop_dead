@@ -8,12 +8,14 @@ var D = 68;
 var S = 83;
 var R = 82;
 var C = 67;
+var Y = 89;
 
 //game status faux-constants
 var GAME_RUNNING = 1;
 var GAME_PAUSED = 2;
 var GAME_OVER = 3;
 var GAME_RUNNER_WON = 4;
+var GAME_LEVEL_WON = 5;
 
 //block colors
 var color_hash = { red: "rgba(255, 0, 0, 0.3)",
@@ -39,7 +41,12 @@ var Game = function(){
 	
 	
 	//the simple AI
-	this.ai_on = false;
+	this.ai_on = true;
+	this.ai_array = null; 
+	
+	//game levels 
+	this.level = 1;
+	this.max_level = 10;
 	
 	//game_vars
 	this.status = GAME_RUNNING;
@@ -113,13 +120,39 @@ Game.prototype.initObjects = function() {
 	//set the players width
 	this.playerBlock.width = this.block_width;
 	
+	this.block_player_on = false;
+	
 	if (this.ai_on){
-		//make an AI player
-		this.AI = new AI();
-		//set the AI block width - hacky
-		this.AI.block.width = this.block_width;
-		//give it a handle on the block array
-		this.AI.target_block_array = this.block_array;
+		
+		//make the ai_array
+		this.ai_array = new Array();
+		for (var i = this.level - 1; i >= 0; i--){
+			//new temp AI object
+			var temp_ai = new AI();
+			temp_ai.block.width = this.block_width;
+			//give it a handle on the block array for block insertion
+			temp_ai.target_block_array = this.block_array;
+			//move it somewhere
+			temp_ai.block.position = new Vector((32 * i) * 2, 5);
+			
+			if (i == 1){
+				temp_ai.block.color = "rgba(0, 255, 0, 0.2)";
+				temp_ai.block.position = new Vector(64, 5);
+			}
+			
+			//set the difficulty 
+			var diff = 6 - i;
+			if (diff < 1){
+				diff = 1 - (1 / i);
+			}
+			temp_ai.setDifficulty(diff / 2);
+			
+			//insert it into the array
+			this.ai_array[i] = temp_ai;
+		};
+		console.log("FINISHED CREATING AI ARRAY");
+		console.log(this.ai_array);
+		
 	}
 	
 	//block objects array
@@ -145,7 +178,7 @@ Game.prototype.initGame = function(){
 	console.log("initGame");
 	
 	//set things up for game here
-	this.canvas = $("canvas");
+	this.canvas = $("#canvas");
 	this.context = this.canvas.get(0).getContext("2d");
 	
 	this.canvas.attr("width", 800);
@@ -156,6 +189,10 @@ Game.prototype.initGame = function(){
 	this.floor.setWidth(canvas.width);
 	//set the position of the floor
 	this.floor.setPosition(0, (canvas.height - this.floor.getTileWidth()));
+	
+	if(this.level == 1 || this.level == 2 || this.level == 3){
+		this.floor.setPosition(0, (canvas.height - (200 * 1/this.level)));
+	}
 	
 	//set up the target height
 	this.target_height = (canvas.height / 100) * 22;
@@ -244,6 +281,8 @@ Game.prototype.timeout = function(){
 
 //update the positions etc
 Game.prototype.update = function(delta){
+	
+	// console.log(this.ai_array);
 		
 	if(this.status == GAME_RUNNING){
 	
@@ -369,23 +408,25 @@ Game.prototype.update = function(delta){
 			}
 		}
 	
-		//update the bock player
-		if (this.a_key_down == true){
-			//move left
-			if (this.playerBlock.position.x > 0){
-				//bounds detection okay, can move
-				this.playerBlock.updatePosition(delta, this.playerBlock.position.x - this.block_width);
+		if (this.block_player_on){
+			//update the bock player
+			if (this.a_key_down == true){
+				//move left
+				if (this.playerBlock.position.x > 0){
+					//bounds detection okay, can move
+					this.playerBlock.updatePosition(delta, this.playerBlock.position.x - this.block_width);
+				}
+			} else if (this.d_key_down == true){
+				//move right
+				if (this.playerBlock.position.x < canvas.width - this.block_width){
+					this.playerBlock.updatePosition(delta, this.playerBlock.position.x + this.block_width);
+				}
 			}
-		} else if (this.d_key_down == true){
-			//move right
-			if (this.playerBlock.position.x < canvas.width - this.block_width){
-				this.playerBlock.updatePosition(delta, this.playerBlock.position.x + this.block_width);
-			}
-		}
 	
-		if (this.s_key_down == true){
-			//fire a block
-			this.playerBlock.fireBlock(delta, this.block_array, this.imageManager);
+			if (this.s_key_down == true){
+				//fire a block
+				this.playerBlock.fireBlock(delta, this.block_array, this.imageManager);
+			}
 		}
 	
 		//update the background
@@ -417,6 +458,11 @@ Game.prototype.update = function(delta){
 								block.moving = false;
 								block.velocity.y = 0;
 								block.position.y = blockB.position.y - block.getHeight();
+								if (block.position.y < this.target_height - 64){
+									//remove me!
+									console.log("remove block.");
+									block.removeme = true;
+								}
 							}
 						}
 					}
@@ -451,23 +497,61 @@ Game.prototype.update = function(delta){
 					block.position.y = this.ground - block.getHeight();
 					block.moving = false;
 					block.velocity.y = 0;
-				}
+				}				
 			}
+			
+			if (block.removeme == true){
+				this.block_array.splice(x,1);
+			}
+			
 		} // end of for loop
 	
 		//update the ai, if it's turned on
 		if(this.ai_on){
-			this.AI.update(delta, this.player.position.x);
+				//update all of the AI players
+				for (var i = this.level - 1; i >= 0; i--){
+					var temp_ai = new AI();
+					// console.log(this.ai_array);
+					temp_ai = this.ai_array[i];
+					temp_ai.update(delta, this.player.position.x);
+					
+					//lets deal with other AI – collision detection
+					for (var y = (this.ai_array.length - 1); y > 0; y--){
+						var aiB = new AI();
+						aiB = this.ai_array[y];
+						//make sure we are not testing against ourselves
+						if (temp_ai != aiB){
+							//test for collision
+							if (this.collisionDetect(temp_ai.block.getBoundingRect(), aiB.block.getBoundingRect()) == true){
+								//if a collision exsits
+								//move me left or right
+								var random = Math.floor(Math.random()*1)
+								if (random == 1){
+									temp_ai.block.position = new Vector(temp_ai.block.position.x - temp_ai.block.width, temp_ai.block.position.y)
+								}else{
+									temp_ai.block.position = new Vector(temp_ai.block.position.x + temp_ai.block.width, temp_ai.block.position.y)									
+								}
+								//reset, we need to reloop through this to test again – CAREFUL ! RECURSION THIS IS NOT GOOD!
+								// y = (this.ai_array.length - 1);
+							}
+						}
+					}//end of collision detection
 		
-			if (this.AI.firing){
-				//fire a block
-				this.AI.fire(delta, this.block_array, this.imageManager);
-			}
+				// if (temp_ai.firing){
+				// 	//fire a block
+					temp_ai.fire(delta, this.block_array, this.imageManager);
+				// }
+			};
 		}
 		
 		//has the player won?
 		if ((this.player.position.y + this.player.getHeight()) < this.target_height && this.player.lives >= 0){
-			this.status = GAME_RUNNER_WON;
+			//we've at least won a level
+			if (this.level == this.max_level){
+				this.status = GAME_RUNNER_WON;
+			}else if(this.level < this.max_level){
+				this.status = GAME_LEVEL_WON;
+			}
 			if (this.alert_opacity != 0.7){
 				//alert in progress, force a new one
 				this.alert_opacity = 0.7;
@@ -487,6 +571,10 @@ Game.prototype.update = function(delta){
 	} // end of if
 	
 	switch (this.status){
+			case GAME_LEVEL_WON:
+				this.alert_message = "START LVL " + (this.level + 1) + "? PRS Y"
+				this.alert_opacity = 0.7;
+				break;
 			case GAME_RUNNER_WON:
 				//display a giant restart message
 				this.alert_message = "WIN! R TO RESTART"
@@ -522,11 +610,17 @@ Game.prototype.draw = function(){
 	this.player.draw(this.context);
 	
 	//draw the block player
-	this.playerBlock.draw(this.context);
+	if (this.block_player_on){
+		this.playerBlock.draw(this.context);
+	}
 	
 	//draw the AI
 	if(this.ai_on){
-		this.AI.draw(this.context);
+		for (var i = (this.ai_array.length - 1); i >= 0; i--){
+			temp_ai = new AI();
+			temp_ai = this.ai_array[i];
+			temp_ai.draw(this.context);
+		};
 	}
 	
 	//display the current fps
@@ -535,11 +629,14 @@ Game.prototype.draw = function(){
 	this.context.fillText("fps: " + this.current_fps, 10, 20);
 	
 	//display the ai status
-	if(this.ai_on){
-		this.context.fillText("ai: on", (this.canvas.width() - 100), 35);
-	}else{
-		this.context.fillText("ai: off", (this.canvas.width() - 100), 35);
-	}
+	// if(this.ai_on){
+	// 	this.context.fillText("ai: on", (this.canvas.width() - 100), 35);
+	// }else{
+	// 	this.context.fillText("ai: off", (this.canvas.width() - 100), 35);
+	// }
+	
+	//display the level
+	this.context.fillText("level: " + this.level + "/" + this.max_level, (this.canvas.width() - 100), 35);
 	
 	//draw the target line
 	this.context.fillStyle = "rgba(255, 255, 255, 0.5)";
@@ -689,15 +786,22 @@ Game.prototype.keyUp = function(e) {
 			break;
 		case R:
 			console.log('R');
+			self.level = 1;
 			self.restart_game();
 			break;
-		case C:
-			if(self.ai_on == true){
-				self.ai_on = false;
-			}else{
-				self.ai_on = true;
+		// case C:
+		// 	if(self.ai_on == true){
+		// 		self.ai_on = false;
+		// 	}else{
+		// 		self.ai_on = true;
+		// 	}
+		// 	self.restart_game();
+			break;
+		case Y:
+			if (self.status == 5){
+				self.level = self.level + 1;
+				self.restart_game();				
 			}
-			self.restart_game();
 	};
 };
 

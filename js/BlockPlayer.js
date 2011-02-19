@@ -2,7 +2,7 @@
 
 var BlockPlayer = function(){
 	//player color
-	this.color = "rgba(255, 0, 0, 0.2)";
+	this.color = "rgba(255, 0, 0, 0.7)";
 	this.player_name = "enemy";
 	
 	//default player position
@@ -18,13 +18,15 @@ var BlockPlayer = function(){
 	this.maximum_fire_rate = 1/2;
 	this.current_fire_rate = 0;
 	
+	this.boundingRect = new Rect(0, 0, 0, 0);
+	
 	//are we moving?
 	this.moving = false;
 }
 
 BlockPlayer.prototype.draw = function(ctx) {
 	//draw the player bounding rectangle
-	ctx.fillStyle = "rgb(255, 0, 255)";
+	ctx.fillStyle = this.color;
 	ctx.fillRect(this.position.x, this.position.y, this.width, this.height);
 	//draw the player name
 	ctx.fillStyle = "rgb(255, 255, 255)";
@@ -44,6 +46,25 @@ BlockPlayer.prototype.updatePosition = function(delta, newPos) {
 		this.current_rate = 0;
 	}
 	
+};
+
+//get the bounding rect
+BlockPlayer.prototype.getBoundingRect = function() {
+	width = 0, height = 0;
+	
+	width = this.width;
+	height = this.height;
+	
+	//80% of actual rect
+	col_width = width * 0.80;
+	col_height = height * 0.80;
+	
+	col_x_offset = (width - col_width) / 2;
+	col_y_offset = (height - col_height) / 2;
+		
+	this.boundingRect.setRect(this.position.x + col_x_offset, this.position.y + col_y_offset, col_width, col_height);
+	
+	return this.boundingRect;
 };
 
 

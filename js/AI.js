@@ -4,7 +4,7 @@
 var AI = function(){
 	//how quickly our AI can move, how often it drops blocks 
 	//lower is more difficult
-	this.difficulty = 0.5;
+	this.difficulty = 1;
 		
 	//the block that represents the AI
 	this.block = new BlockPlayer();
@@ -15,13 +15,23 @@ var AI = function(){
 	this.fire_rate = 1;
 	
 	this.fire_accumulator = 0;
-		
 };
+
+AI.prototype.setDifficulty = function(diff) {
+	this.difficulty = diff;
+	this.fire_rate = diff;
+};
+
 
 AI.prototype.update = function(delta, playerPosX) {
 	
 	//update the accumulator
 	this.deltaAccumulator = this.deltaAccumulator + delta;
+	// console.log("deltaAcc = " + this.deltaAccumulator + "			delta= " + delta);
+	
+	
+	//should we fire for extra difficulty?
+	// if (this.difficulty > )
 	
 	//we want to move toward the player, if the difficulty allows it
 	if (playerPosX > (this.block.position.x + this.block.width)){
@@ -45,11 +55,12 @@ AI.prototype.update = function(delta, playerPosX) {
 	}else{
 		//the player is directly underneath - don't move
 		//reset the accumulator
-		this.deltaAccumulator = 0;
-		this.firing = true;		
+		// this.deltaAccumulator = 0;
+		// this.firing = true;		
 	}
-	
+		
 };
+
 
 AI.prototype.fire = function(delta, blockArray, imageManager) {
 	//replace this function

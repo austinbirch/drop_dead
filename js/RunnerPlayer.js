@@ -34,7 +34,7 @@ var RunnerPlayer = function(){
 	//player jump speed
 	this.jump_speed = -8;
 	
-	this.max_lives = 2;
+	this.max_lives = 20000000;
 	this.lives = this.max_lives;
 	
 	//default acceleration

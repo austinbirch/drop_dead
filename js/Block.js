@@ -10,6 +10,7 @@ var Block = function(){
 	this.moving = false;
 	
 	this.boundingRect = new Rect(0, 0, 0, 0);
+	this.removeme = false;
 };
 
 //set the block image using the imagemanager
