@@ -32,7 +32,7 @@ var RunnerPlayer = function(){
 	this.boundingRect = new Rect(0, 0, 0, 0);
 	
 	//player jump speed
-	this.jump_speed = -8;
+	this.jump_speed = -80;
 	
 	this.max_lives = 20000000;
 	this.lives = this.max_lives;

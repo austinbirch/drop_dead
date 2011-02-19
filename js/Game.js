@@ -22,7 +22,7 @@ var color_hash = { red: "rgba(255, 0, 0, 0.3)",
  										green: "rgba(0, 255, 0, 0.3)",
 										blue: "rgba(0, 0, 255, 0.3)",
 										fuchsia: "rgba(255, 0, 255, 0.3)",
-										white: "rgba(255, 255, 255, 0.3)" };
+										white: "rgba(255, 255, 255, 0.6)" };
 
 //constructor - init objects 
 var Game = function(){
@@ -138,6 +138,25 @@ Game.prototype.initObjects = function() {
 			if (i == 1){
 				temp_ai.block.color = "rgba(0, 255, 0, 0.2)";
 				temp_ai.block.position = new Vector(64, 5);
+			}
+			
+			var random = Math.floor(Math.random()*4);
+			switch (random) {
+				case 0:
+					temp_ai.block.color = color_hash.red;
+					break;
+				case 1:
+				temp_ai.block.color = color_hash.white;
+				break;
+				case 2:
+				temp_ai.block.color = color_hash.green;
+				break;
+				case 3:
+				temp_ai.block.color = color_hash.fuchsia;
+				break;
+				case 4:
+				temp_ai.block.color = color_hash.blue;
+				break;
 			}
 			
 			//set the difficulty 
