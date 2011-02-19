@@ -210,12 +210,17 @@ Game.prototype.initGame = function(){
 	//set the position of the floor
 	this.floor.setPosition(0, (canvas.height - this.floor.getTileWidth()));
 	
-	if(this.level == 1 || this.level == 2 || this.level == 3){
-		this.floor.setPosition(0, (canvas.height - (200 * 1/this.level)));
-	}
-	
+		
 	//set up the target height
 	this.target_height = (canvas.height / 100) * 22;
+	
+	if(this.level == 1){
+		this.target_height = (canvas.height / 100) * 65;
+	}else if(this.level == 2){
+		this.target_height = (canvas.height / 100) * 50;
+	}else if(this.level == 3){
+		this.target_height = (canvas.height / 100) * 35;
+	}
 	
 	//get the ground position
 	this.ground = this.floor.position.y;
