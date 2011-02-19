@@ -156,7 +156,7 @@ Game.prototype.initObjects = function() {
 				break;
 				case 4:
 				temp_ai.block.color = color_hash.blue;
-				break;
+				break; 
 			}
 			
 			//set the difficulty 
