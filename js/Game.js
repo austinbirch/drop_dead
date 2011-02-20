@@ -171,8 +171,8 @@ Game.prototype.initObjects = function() {
 			//insert it into the array
 			this.ai_array[i] = temp_ai;
 		};
-		console.log("FINISHED CREATING AI ARRAY");
-		console.log(this.ai_array);
+		// console.log("FINISHED CREATING AI ARRAY");
+		// console.log(this.ai_array);
 		
 	}
 	
@@ -196,7 +196,7 @@ Game.prototype.initObjects = function() {
 
 Game.prototype.initGame = function(){
 	
-	console.log("initGame");
+	// console.log("initGame");
 	
 	//set things up for game here
 	this.canvas = $("#canvas");
@@ -485,7 +485,7 @@ Game.prototype.update = function(delta){
 								block.position.y = blockB.position.y - block.getHeight();
 								if (block.position.y < this.target_height - 64){
 									//remove me!
-									console.log("remove block.");
+									// console.log("remove block.");
 									block.removeme = true;
 								}
 							}
@@ -835,7 +835,6 @@ Game.prototype.keyUp = function(e) {
 			}
 			break;
 		case R:
-			console.log('R');
 			self.level = 1;
 			self.restart_game();
 			break;

@@ -14,7 +14,7 @@ var ImageManager = function(){
 
 //load all the images managed by the ImageManager
 ImageManager.prototype.loadImages = function(context, callback) {
-	console.log("load images (ImageManager)");
+	// console.log("load images (ImageManager)");
 	//to store the images
 	var tmpImage = {};
 	
@@ -30,7 +30,7 @@ ImageManager.prototype.loadImages = function(context, callback) {
 		oldSelf = this;
 		//callback for when the image is done loading
 		tmpImage[key].onload = function(){
-			console.log("tmpImage[" + this.id + "].onload");
+			// console.log("tmpImage[" + this.id + "].onload");
 			//add it to the imageHashTable, once it's in memory
 			//the id attr of theImage(this) contains the key it belongs to.
 			oldSelf.imageHashTable[this.id] = tmpImage[this.id];

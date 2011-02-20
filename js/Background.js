@@ -29,9 +29,9 @@ Background.prototype.setBackgroundImage = function(imageManager) {
 	this.tile_height = this.backgroundImage.height;
 	//set the map width & height (add two so that we can put a one tile border around the whole bg)
 	this.map_tiled_width = Math.ceil((this.canvas_width / this.backgroundImage.width));
-	console.log(this.map_tiled_width);
+	// console.log(this.map_tiled_width);
 	this.map_tiled_height = Math.ceil((this.canvas_height / this.backgroundImage.height));
-	console.log(this.map_tiled_height);
+	// console.log(this.map_tiled_height);
 };
 
 //draw the background image
