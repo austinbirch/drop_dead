@@ -17,6 +17,7 @@ var GAME_PAUSED = 2;
 var GAME_OVER = 3;
 var GAME_RUNNER_WON = 4;
 var GAME_LEVEL_WON = 5;
+var GAME_NOT_STARTED = 6;
 
 //block colors
 var color_hash = { red: "rgba(255, 0, 0, 0.3)",
@@ -50,7 +51,7 @@ var Game = function(){
 	this.max_level = 10;
 	
 	//game_vars
-	this.status = GAME_RUNNING;
+	this.status = GAME_NOT_STARTED;
 	
 	//global gravity
 	this.gravity = 0.5;
@@ -614,6 +615,11 @@ Game.prototype.update = function(delta){
 				this.alert_message = "PAUSED. P TO UNPAUSE";
 				this.alert_opacity = 0.7;
 				break;
+			case GAME_NOT_STARTED:
+				//display start message
+				this.alert_message = "PRSS SPACE TO START"
+				this.alert_opacity = 0.7;
+				break;
 		}
 		
 };
@@ -801,6 +807,12 @@ Game.prototype.keyUp = function(e) {
 		case ARROW.UP:
 			break;
 		case SPACE:
+		
+			//if the game isn't started
+			if (self.status == 6){
+				//start the game
+				self.status = 1;
+			}
 			self.space_key_down = false;
 			break;	
 			
