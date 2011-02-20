@@ -203,23 +203,22 @@ Game.prototype.initGame = function(){
 	
 	this.canvas.attr("width", 800);
 	this.canvas.attr("height", 500);
-	
-	
+		
 	//set up the floor
-	this.floor.setWidth(canvas.width);
+	this.floor.setWidth(800);
 	//set the position of the floor
-	this.floor.setPosition(0, (canvas.height - this.floor.getTileWidth()));
+	this.floor.setPosition(0, (500 - this.floor.getTileWidth()));
 	
 		
 	//set up the target height
-	this.target_height = (canvas.height / 100) * 22;
+	this.target_height = (500 / 100) * 22;
 	
 	if(this.level == 1){
-		this.target_height = (canvas.height / 100) * 65;
+		this.target_height = (500 / 100) * 65;
 	}else if(this.level == 2){
-		this.target_height = (canvas.height / 100) * 50;
+		this.target_height = (500 / 100) * 50;
 	}else if(this.level == 3){
-		this.target_height = (canvas.height / 100) * 35;
+		this.target_height = (500 / 100) * 35;
 	}
 	
 	//get the ground position
@@ -411,7 +410,7 @@ Game.prototype.update = function(delta){
 		//if the player is moving, then move
 		if (this.player.moving == true){
 			var newPositionX = this.player.position.x + this.player.velocity.x;
-			if (newPositionX > 0 && newPositionX < (canvas.width - this.player.getWidth())){
+			if (newPositionX > 0 && newPositionX < (800 - this.player.getWidth())){
 					//if within bounds of the canvas
 					this.player.position.x = newPositionX;
 					//test for collision				
