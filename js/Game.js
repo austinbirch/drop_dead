@@ -746,44 +746,52 @@ Game.prototype.keyDown = function(e) {
 	
 	//grab the right context
 	var self = e.data.self;
-	
+		
 	//which key was pressed?
 	switch (keyCode) {
 		case ARROW.LEFT:
 			self.left_key_down = true;
+
 			break;
 		case ARROW.RIGHT:
 			self.right_key_down = true;
+			e.preventDefault();
 			break;
 		case ARROW.DOWN:
+			e.preventDefault();
 			break;
 		case ARROW.UP:
+			e.preventDefault();
 			break;
 		case SPACE:
 			self.space_key_down = true;
+			e.preventDefault();
 			break;
 					
 		case A:
 			self.a_key_down = true;
+			e.preventDefault();
 			break;
 		case D:
 			self.d_key_down = true;
+			e.preventDefault();
 			break;
 		case S:
 			self.s_key_down = true;
+			e.preventDefault();
 			break;
 	};
 	
 	//stop the browser from processing all of the events we will deal with
 	//not particularly good practice, I'll change this later
-	switch (keyCode){
-		case ARROW.LEFT:
-		case ARROW.RIGHT:
-		case ARROW.UP:
-		case ARROW.DOWN:
-		case SPACE:
-			return false;
-	};
+	// switch (keyCode){
+	// 	case ARROW.LEFT:
+	// 	case ARROW.RIGHT:
+	// 	case ARROW.UP:
+	// 	case ARROW.DOWN:
+	// 	case SPACE:
+	// 		return false;
+	// };
 	
 };
 
