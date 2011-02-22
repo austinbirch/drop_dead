@@ -501,7 +501,7 @@ Game.prototype.update = function(delta){
 						//check for player death					
 						if (this.player.lives <= 0){
 							//player is dead!
-							this.player.lives = 0;
+							this.player.lives = -1;
 							this.alert_message = "YOU'RE DEAD!";
 							this.status = GAME_OVER;
 							if (this.alert_opacity != 0.7){
@@ -674,7 +674,7 @@ Game.prototype.draw = function(){
 	// }
 	
 	//display the level
-	this.context.fillText("level: " + this.level + "/" + this.max_level, (this.canvas.width() - 100), 40);
+	this.context.fillText("level: " + this.level + "/" + this.max_level, (this.canvas.width() - 120), 40);
 	
 	//draw the target line
 	this.context.fillStyle = "rgba(255, 255, 255, 0.5)";

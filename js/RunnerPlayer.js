@@ -131,15 +131,11 @@ RunnerPlayer.prototype.draw = function(ctx) {
 	ctx.fillText(this.player_name, (this.position.x - 10), (this.position.y - 5));
 
 	//draw the player lives 
-	ctx.fillText("lives left: ", (ctx.canvas.width - 136), 20);
-	for (var i = this.lives; i > 0; i--){
+	ctx.fillText("lives: ", (ctx.canvas.width - 120), 20);
+	for (var i = this.lives; i >= 0; i--){
 		ctx.drawImage(this.lives_image, (ctx.canvas.width - 69) + (i * 16), 10);
 	};
-	
-	if (this.lives == 0){
-		ctx.fillText("none!", (ctx.canvas.width - 55), 20);
-	}
-	
+		
 };
 
 //set the position of the player
