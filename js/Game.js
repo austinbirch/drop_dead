@@ -840,8 +840,8 @@ Game.prototype.keyUp = function(e) {
 			if (self.status == 2){
 				//if paused – set to running
 				self.status = 1;
-			}else{
-				//if not paused – set to paused
+			}else if(self.status == 1){
+				//if running – set to paused
 				self.status = 2;
 			}
 			break;
